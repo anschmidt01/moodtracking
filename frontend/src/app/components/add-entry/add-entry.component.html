@@ -1,0 +1,36 @@
+<div class="add-entry-container">
+  <h2 class="title">Wie geht es dir heute?</h2>
+  <div class="emotions">
+    <button
+      *ngFor="let emotion of emotions"
+      [class.selected]="selectedEmotion() === emotion.value"
+      (click)="selectEmotion(emotion.value)"
+      [ngStyle]="{ 'background-color': emotion.color }"
+      class="emotion-button"
+    >
+      <span class="emoji">{{ emotion.icon }}</span>
+      <span class="label">{{ emotion.label }}</span>
+    </button>
+  </div>
+
+  <h3 class="subtitle">Heutige Aktivitäten</h3>
+  <div class="activities">
+    <button
+      *ngFor="let activity of activities"
+      [class.active]="selectedActivities().includes(activity)"
+      (click)="toggleActivity(activity)"
+      class="activity-button"
+    >
+      {{ activity }}
+    </button>
+  </div>
+
+  <textarea
+  placeholder="Notiz hinzufügen (z.B.: Trigger-Ereignisse, positive Moment oder ähnliches)"
+  [value]="note()"
+  (input)="onNoteInput($event)"
+  class="note-input"
+></textarea>
+
+  <button class="save-button" (click)="saveEntry()">Speichern</button>
+</div>

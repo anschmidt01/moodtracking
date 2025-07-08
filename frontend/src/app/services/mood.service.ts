@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface MoodEntry {
   date: string;
@@ -11,13 +13,15 @@ export interface MoodEntry {
   providedIn: 'root'
 })
 export class MoodService {
-  private moods: MoodEntry[] = [];
+  private apiUrl = 'http://localhost:3000/moods'; // dein Backend-Endpunkt
 
-  getMoods(): MoodEntry[] {
-    return this.moods;
+  constructor(private http: HttpClient) {}
+
+  saveMood(entry: MoodEntry): Observable<MoodEntry> {
+    return this.http.post<MoodEntry>(this.apiUrl, entry);
   }
 
-  addMood(entry: MoodEntry) {
-    this.moods.push(entry);
+  getMoods(): Observable<MoodEntry[]> {
+    return this.http.get<MoodEntry[]>(this.apiUrl);
   }
 }

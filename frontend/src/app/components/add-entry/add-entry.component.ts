@@ -10,11 +10,11 @@ import { MoodService, MoodEntry } from 'src/app/services/mood.service';
 })
 export class AddEntryComponent {
   emotions = [
-    { value: 'terrible', label: 'Schrecklich', icon: '😞', color: '#f44336' },
-    { value: 'bad', label: 'Schlecht', icon: '😟', color: '#e57373' },
-    { value: 'okay', label: 'Okay', icon: '😐', color: '#ffb74d' },
-    { value: 'good', label: 'Gut', icon: '🙂', color: '#81c784' },
-    { value: 'great', label: 'Fantastisch', icon: '😄', color: '#4caf50' },
+    { value: 'Schrecklich', label: 'Schrecklich', icon: '😞', color: '#f44336' },
+    { value: 'Schlecht', label: 'Schlecht', icon: '😟', color: '#e57373' },
+    { value: 'Okay', label: 'Okay', icon: '😐', color: '#ffb74d' },
+    { value: 'Gut', label: 'Gut', icon: '🙂', color: '#81c784' },
+    { value: 'Fantastisch', label: 'Fantastisch', icon: '😄', color: '#4caf50' },
   ];
 
   activities = ['Arbeit', 'Sport', 'Entspannen', 'Rausgehen'];
@@ -24,6 +24,8 @@ export class AddEntryComponent {
   note = signal<string>('');
 
   @Output() entrySaved = new EventEmitter<any>();
+
+  constructor(private moodService: MoodService, private router: Router) {}
 
   selectEmotion(emotion: string) {
     this.selectedEmotion.set(emotion);
@@ -50,18 +52,26 @@ export class AddEntryComponent {
       alert('Bitte gib an wie du dich heute fühlst.');
       return;
     }
-
-    const entry = {
-      emotion: this.selectedEmotion(),
+  
+    const entry: MoodEntry = {
+      mood: this.selectedEmotion() as string,
       activities: this.selectedActivities(),
-      note: this.note().trim(),
-      date: new Date(),
+      notes: this.note().trim(),
+      date: new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
     };
-
-    this.entrySaved.emit(entry);
-
-    this.selectedEmotion.set(null);
-    this.selectedActivities.set([]);
-    this.note.set('');
-  }
+  
+    this.moodService.saveMood(entry).subscribe({
+      next: (response) => {
+        console.log('In DB gespeichert:', response);
+        alert('Eintrag erfolgreich gespeichert!');
+        this.selectedEmotion.set(null);
+        this.selectedActivities.set([]);
+        this.note.set('');
+      },
+      error: (err) => {
+        console.error('Fehler beim Speichern:', err);
+        alert('Fehler beim Speichern des Eintrags.');
+      }
+    });
+  }  
 }

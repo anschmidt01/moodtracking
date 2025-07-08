@@ -13,7 +13,15 @@ export class HistoryComponent implements OnInit {
 
   constructor(private moodService: MoodService) {}
 
-  ngOnInit(): void {
-    this.moods = this.moodService.getMoods();
+  ngOnInit() {
+    this.moodService.getMoods().subscribe({
+      next: (data) => {
+        this.moods = data;
+        console.log('Geladene Einträge:', this.moods);
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden:', err);
+      }
+    });
   }
 }

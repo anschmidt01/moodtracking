@@ -8,6 +8,8 @@ import { HistoryComponent } from './components/history/history.component';
 import { AddEntryComponent } from './components/add-entry/add-entry.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+import { MainLayoutComponent } from './components/layouts/main-layout/main-layout.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { SettingsComponent } from './components/settings/settings.component';
     HistoryComponent,
     AddEntryComponent,
     StatisticsComponent,
-    SettingsComponent 
+    SettingsComponent,
+    WelcomeComponent,
+    MainLayoutComponent 
   ],
   imports: [
     BrowserModule,

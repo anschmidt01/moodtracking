@@ -58,7 +58,7 @@ export class AddEntryComponent {
       mood: this.selectedEmotion() as string,
       activities: this.selectedActivities(),
       notes: this.note().trim(),
-      date: new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
+      date: new Date().toISOString(),
     };
   
     this.moodService.saveMood(entry).subscribe({

@@ -64,19 +64,19 @@ export class HistoryComponent implements OnInit {
     const sortedKeys = Object.keys(grouped).sort();
   
     this.chartLabels = sortedKeys.map((k) => {
-      if (this.groupMode === 'day') {
-        const [y, m, d] = k.split('-');
-        return `${d}.${m}.${y}`;
-      }
-      if (this.groupMode === 'month') {
-        const [y, m] = k.split('-');
-        return `${m}.${y}`;
-      }
-      if (this.groupMode === 'week') {
-        return k;
-      }
-      return k;
-    });
+  if (this.groupMode === 'day') {
+    const date = new Date(k);
+    return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+  if (this.groupMode === 'month') {
+    const [y, m] = k.split('-');
+    return `${m}.${y}`;
+  }
+  if (this.groupMode === 'week') {
+    return k;
+  }
+  return k;
+});
   
     this.chartData = sortedKeys.map((k) => grouped[k]);
   }

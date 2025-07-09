@@ -1,8 +1,8 @@
-<p>main-layout works!</p>
-<nav>
-    <a routerLink="/">Verlauf</a> |
-    <a routerLink="/add">Neuer Eintrag</a> |
-    <a routerLink="/statistics">Statistik</a> |
-    <a routerLink="/settings">Einstellungen</a>
+<nav class="navbar">
+    <a routerLink="/history" routerLinkActive="active">📈 Verlauf</a>
+    <a routerLink="/add-entry" routerLinkActive="active">➕ Neuer Eintrag</a>
+    <a routerLink="/statistics" routerLinkActive="active">📊 Statistik</a>
+    <a routerLink="/settings" routerLinkActive="active">⚙️ Einstellungen</a>
+    <a routerLink="/">🏠 Startseite</a>
   </nav>
-  <hr />
+  <router-outlet></router-outlet>

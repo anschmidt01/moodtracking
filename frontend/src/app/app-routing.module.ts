@@ -15,7 +15,7 @@ const routes: Routes = [
     component: MainLayoutComponent, 
     children: [
   { path: 'history', component: HistoryComponent },
-  { path: 'add', component: AddEntryComponent },
+  { path: 'add-entry', component: AddEntryComponent },
   { path: 'statistics', component: StatisticsComponent },
   { path: 'settings', component: SettingsComponent }
 ]

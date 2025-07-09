@@ -10,12 +10,13 @@ import { MoodService, MoodEntry } from 'src/app/services/mood.service';
 })
 export class AddEntryComponent {
   emotions = [
-    { value: 'Schrecklich', label: 'Schrecklich', icon: '😞', color: '#f44336' },
-    { value: 'Schlecht', label: 'Schlecht', icon: '😟', color: '#e57373' },
-    { value: 'Okay', label: 'Okay', icon: '😐', color: '#ffb74d' },
-    { value: 'Gut', label: 'Gut', icon: '🙂', color: '#81c784' },
-    { value: 'Fantastisch', label: 'Fantastisch', icon: '😄', color: '#4caf50' },
+    { value: 'Schrecklich', label: 'Schrecklich', icon: '😞', color: '#fde2e2' },
+    { value: 'Schlecht', label: 'Schlecht', icon: '😟', color: '#f8d7da' },
+    { value: 'Okay', label: 'Okay', icon: '😐', color: '#fff3cd' },
+    { value: 'Gut', label: 'Gut', icon: '🙂', color: '#d4edda' },
+    { value: 'Fantastisch', label: 'Fantastisch', icon: '😄', color: '#d1e7dd' },
   ];
+  
 
   activities = ['Arbeit', 'Sport', 'Entspannen', 'Rausgehen'];
 

@@ -1,0 +1,118 @@
+.edit-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+  
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+    }
+  
+    .emotions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+  
+      .emotion-button {
+        flex: 1 1 calc(50% - 0.5rem);
+        border: none;
+        border-radius: 16px;
+        color: #333;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        font-size: 1rem;
+  
+        &.selected {
+          box-shadow: 0 0 0 3px rgba(0,0,0,0.2);
+          transform: translateY(-2px);
+        }
+  
+        .emoji {
+          font-size: 1.5rem;
+          margin-bottom: 0.3rem;
+        }
+  
+        .label {
+          font-size: 0.95rem;
+        }
+      }
+  
+      // Pastellfarben je nach Emotion
+      .emotion-button:nth-child(1) { background-color: #fde2e2; }
+      .emotion-button:nth-child(2) { background-color: #f8d7da; }
+      .emotion-button:nth-child(3) { background-color: #fff3cd; }
+      .emotion-button:nth-child(4) { background-color: #d4edda; }
+      .emotion-button:nth-child(5) { background-color: #d1e7dd; }
+    }
+  
+    .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+  
+    .activities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+  
+      .activity-button {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f4f4f4;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+  
+        &.active {
+          background-color: #d0eaff;
+          border-color: #2196f3;
+        }
+      }
+    }
+  
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      background: #f9f9f9;
+    }
+  
+    .button-row {
+      display: flex;
+      gap: 0.5rem;
+  
+      button {
+        padding: 1rem;
+        background: #d0eaff;
+        color: #333;
+        font-weight: 600;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background: #c49aff;
+        }
+      }
+    }
+  }
+  

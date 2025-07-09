@@ -1,0 +1,22 @@
+<div *ngIf="entry as e" class="detail-container" [ngStyle]="{ 'background-color': getColor(e.mood) }">
+    <h2 class="title">
+      {{ getIcon(e.mood) }} {{ e.mood }} am {{ formatDate(e.date) }}
+    </h2>
+  
+    <div class="info">
+      <p><strong>Uhrzeit:</strong> {{ formatTime(e.date) }}</p>
+      <p><strong>Aktivitäten:</strong> 
+        {{ e.activities.length ? e.activities.join(', ') : 'Keine Aktivitäten' }}
+      </p>
+      <p><strong>Notizen:</strong> 
+        {{ e.notes.trim() ? e.notes : 'Keine Notizen' }}
+      </p>
+    </div>
+  
+    <div class="button-row">
+        <button (click)="router.navigate(['/edit', e.id])">Bearbeiten</button>
+      <button (click)="router.navigate(['/history'])">Zurück</button>
+      <button (click)="delete()">Löschen</button>
+    </div>
+  </div>
+  

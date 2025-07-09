@@ -1,6 +1,6 @@
 <div class="history-container">
     <h2 class="title">Verlauf</h2>
-  
+      
     <div class="filter-bar">
         <label for="groupMode">Anzeigen:</label>
         <select id="groupMode" [(ngModel)]="groupMode" (change)="prepareChartData()">
@@ -44,21 +44,18 @@
     </div>
   
     <div class="entries-list">
-      <div
-        *ngFor="let entry of entries"
-        class="entry-card"
-        [ngStyle]="{ 'background-color': getColor(entry.mood) }"
-      >
-        <div class="icon">{{ getIcon(entry.mood) }}</div>
-        <div class="content">
-          <div class="date">{{ formatDate(entry.date) }}</div>
-          <div class="mood">{{ entry.mood }}</div>
-          <div class="activities">
-            {{ entry.activities.length ? entry.activities.join(', ') : 'Keine Aktivitäten' }}
+        <div
+          *ngFor="let entry of entries"
+          class="entry-card"
+          [ngStyle]="{ 'background-color': getColor(entry.mood) }"
+        >
+          <div class="icon">{{ getIcon(entry.mood) }}</div>
+          <div class="content">
+            <div class="date">{{ formatDate(entry.date) }}</div>
+            <div class="mood">{{ entry.mood }}</div>
+            <a [routerLink]="['/history', entry.id]" class="details-link">Details anzeigen</a>
+          </div>
         </div>
-          <div class="notes">{{ entry.notes }}</div>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
   

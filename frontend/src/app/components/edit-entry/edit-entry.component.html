@@ -1,0 +1,41 @@
+<div class="edit-container">
+    <h2 class="title">Eintrag bearbeiten</h2>
+  
+    <div class="emotions">
+      <button
+        *ngFor="let emotion of emotions"
+        [class.selected]="entry?.mood === emotion.label"
+        (click)="entry!.mood = emotion.label"
+        [ngStyle]="{ 'background-color': emotion.color }"
+        class="emotion-button"
+      >
+        <span class="emoji">{{ emotion.icon }}</span>
+        <span class="label">{{ emotion.label }}</span>
+      </button>
+    </div>
+  
+    <h3 class="subtitle">Aktivitäten</h3>
+    <div class="activities">
+      <button
+        *ngFor="let activity of allActivities"
+        [class.active]="entry?.activities?.includes(activity)"
+        (click)="toggleActivity(activity)"
+        class="activity-button"
+        type="button"
+      >
+        {{ activity }}
+      </button>
+    </div>
+  
+    <textarea
+      placeholder="Notiz bearbeiten (z.B.: Trigger-Ereignisse, positive Momente oder ähnliches)"
+      [(ngModel)]="entry!.notes"
+      class="note-input"
+    ></textarea>
+  
+    <div class="button-row">
+      <button class="save-button" (click)="save()">Speichern</button>
+      <button (click)="router.navigate(['/detail', entry?.id])">Abbrechen</button>
+    </div>
+  </div>
+  

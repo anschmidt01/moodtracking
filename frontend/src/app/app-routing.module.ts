@@ -7,6 +7,8 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { SettingsComponent } from './components/settings/settings.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { MainLayoutComponent } from './components/layouts/main-layout/main-layout.component';
+import { HistoryDetailComponent } from './components/history-detail/history-detail.component';
+import { EditEntryComponent } from './components/edit-entry/edit-entry.component';
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent}, 
@@ -17,9 +19,13 @@ const routes: Routes = [
   { path: 'history', component: HistoryComponent },
   { path: 'add-entry', component: AddEntryComponent },
   { path: 'statistics', component: StatisticsComponent },
-  { path: 'settings', component: SettingsComponent }
+  { path: 'settings', component: SettingsComponent },
+  { path: 'history/:id', component: HistoryDetailComponent},
+  { path: 'edit/:id', component: EditEntryComponent},
+  { path: 'detail/:id', component: HistoryDetailComponent },
+
 ]
-  },
+ },
   { path: '**', redirectTo: ''}
 ];
 

@@ -10,6 +10,7 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { SettingsComponent } from './components/settings/settings.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { MainLayoutComponent } from './components/layouts/main-layout/main-layout.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { MainLayoutComponent } from './components/layouts/main-layout/main-layou
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NgChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

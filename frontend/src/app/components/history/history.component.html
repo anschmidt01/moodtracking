@@ -1,1 +1,44 @@
-<p>history works!</p>
+<div class="history-container">
+    <h2 class="title">Verlauf</h2>
+  
+    <div class="chart-box">
+      <canvas
+        baseChart
+        [datasets]="[{ data: chartData, label: 'Einträge pro Tag' }]"
+        [labels]="chartLabels"
+        [options]="{
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  precision: 0,
+                  stepSize: 1
+                }
+              }
+            }
+          }"
+        [legend]="true"
+        chartType="line"
+      ></canvas>
+    </div>
+  
+    <div class="entries-list">
+      <div
+        *ngFor="let entry of entries"
+        class="entry-card"
+        [ngStyle]="{ 'background-color': getColor(entry.mood) }"
+      >
+        <div class="icon">{{ getIcon(entry.mood) }}</div>
+        <div class="content">
+          <div class="date">{{ formatDate(entry.date) }}</div>
+          <div class="mood">{{ entry.mood }}</div>
+          <div class="activities">
+            {{ entry.activities.length ? entry.activities.join(', ') : 'Keine Aktivitäten' }}
+        </div>
+          <div class="notes">{{ entry.notes }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -1,6 +1,26 @@
 <div class="history-container">
     <h2 class="title">Verlauf</h2>
   
+    <div class="filter-bar">
+        <label for="groupMode">Anzeigen:</label>
+        <select id="groupMode" [(ngModel)]="groupMode" (change)="prepareChartData()">
+          <option value="day">Pro Tag</option>
+          <option value="month">Pro Monat</option>
+          <option value="week">Pro Kalenderwoche</option>
+        </select>
+
+        <label for="filterInput">Filter:</label>
+        <input
+          id="filterInput"
+          [(ngModel)]="filterInput"
+          placeholder="z.B. 2025-07 oder 2025-W28"
+        />
+      
+        <button (click)="applyFilter()">Suchen</button>
+        <button (click)="resetFilter()">Zurücksetzen</button>
+
+    </div>
+
     <div class="chart-box">
       <canvas
         baseChart

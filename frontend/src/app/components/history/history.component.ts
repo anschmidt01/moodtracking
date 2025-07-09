@@ -13,6 +13,10 @@ export class HistoryComponent implements OnInit {
   chartLabels: string[] = [];
   chartData: number[] = [];
 
+  groupMode: 'day' | 'month' | 'week' = 'day';
+  filterInput: string = '';
+  filterValue: string = ''; // z.B. '2025-07' oder '2025-W28'
+
   constructor(private moodService: MoodService) {}
 
   ngOnInit() {
@@ -32,27 +36,60 @@ export class HistoryComponent implements OnInit {
   }
 
   prepareChartData() {
-    // Map für Anzahl Einträge pro Kalendertag
-    const grouped: { [date: string]: number } = {};
+    const grouped: { [key: string]: number } = {};
   
     this.entries.forEach((entry) => {
-      const date = new Date(entry.date);
-      const formatted = date.toLocaleDateString('de-DE', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      });
-      grouped[formatted] = (grouped[formatted] || 0) + 1;
+      const dateObj = new Date(entry.date);
+      let key = '';
+  
+      if (this.groupMode === 'day') {
+        key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+      } else if (this.groupMode === 'month') {
+        key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}`;
+      } else if (this.groupMode === 'week') {
+        const janFirst = new Date(dateObj.getFullYear(), 0, 1);
+        const days = Math.floor((dateObj.getTime() - janFirst.getTime()) / (24 * 60 * 60 * 1000));
+        const week = Math.ceil((days + janFirst.getDay() + 1) / 7);
+        key = `${dateObj.getFullYear()}-W${week.toString().padStart(2, '0')}`;
+      }
+  
+      // Filter prüfen
+      if (this.filterValue && !key.startsWith(this.filterValue)) {
+        return; // Überspringen, wenn nicht passend
+      }
+  
+      grouped[key] = (grouped[key] || 0) + 1;
     });
   
-    // Sortierte Labels und Werte
-    this.chartLabels = Object.keys(grouped).sort((a, b) => {
-      const dateA = new Date(a.split('.').reverse().join('-'));
-      const dateB = new Date(b.split('.').reverse().join('-'));
-      return dateA.getTime() - dateB.getTime();
+    const sortedKeys = Object.keys(grouped).sort();
+  
+    this.chartLabels = sortedKeys.map((k) => {
+      if (this.groupMode === 'day') {
+        const [y, m, d] = k.split('-');
+        return `${d}.${m}.${y}`;
+      }
+      if (this.groupMode === 'month') {
+        const [y, m] = k.split('-');
+        return `${m}.${y}`;
+      }
+      if (this.groupMode === 'week') {
+        return k;
+      }
+      return k;
     });
   
-    this.chartData = this.chartLabels.map((date) => grouped[date]);
+    this.chartData = sortedKeys.map((k) => grouped[k]);
+  }
+  
+  applyFilter() {
+    this.filterValue = this.filterInput.trim();
+    this.prepareChartData();
+  }
+
+  resetFilter() {
+    this.filterInput = '';
+    this.filterValue = '';
+    this.prepareChartData();
   }
 
   getColor(mood: string): string {

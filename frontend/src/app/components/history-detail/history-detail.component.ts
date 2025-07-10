@@ -95,7 +95,7 @@ export class HistoryDetailComponent implements OnInit {
   delete(): void {
     if (!this.entry?.id) return;
   
-    if (confirm('Diesen Eintrag wirklich löschen?')) {
+    if (confirm('Möchtest du diesen Eintrag wirklich löschen?')) {
       this.moodService.deleteMood(this.entry.id).subscribe({
         next: () => this.router.navigate(['/history']),
         error: (err) => console.error('Fehler beim Löschen:', err),

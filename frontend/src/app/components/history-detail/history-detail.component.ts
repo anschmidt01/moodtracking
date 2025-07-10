@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MoodService, MoodEntry } from 'src/app/services/mood.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-history-detail',
@@ -14,7 +16,8 @@ export class HistoryDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public router: Router,
-    private moodService: MoodService
+    private moodService: MoodService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -93,14 +96,21 @@ export class HistoryDetailComponent implements OnInit {
     return date.toLocaleTimeString('de-DE');
   }
   delete(): void {
-    if (!this.entry?.id) return;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Eintrag löschen',
+        message: 'Möchtest du diesen Eintrag wirklich löschen?'
+      }
+    });
   
-    if (confirm('Möchtest du diesen Eintrag wirklich löschen?')) {
-      this.moodService.deleteMood(this.entry.id).subscribe({
-        next: () => this.router.navigate(['/history']),
-        error: (err) => console.error('Fehler beim Löschen:', err),
-      });
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && this.entry?.id) {
+        this.moodService.deleteMood(this.entry.id).subscribe({
+          next: () => this.router.navigate(['/history']),
+          error: (err) => console.error('Fehler beim Löschen:', err),
+        });
+      }
+    });
   }
   
 }

@@ -1,1 +1,31 @@
-<p>statistics works!</p>
+<div class="statistics-container">
+    <h2>📊 Deine Stimmungsauswertung</h2>
+  
+    <div *ngIf="isLoading">Lade Statistik...</div>
+    <div *ngIf="error">{{ error }}</div>
+  
+    <div *ngIf="!isLoading && !error" class="chart-wrapper">
+      <canvas baseChart
+        [data]="chartData"
+        [type]="'doughnut'"
+        [options]="{
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }">
+      </canvas>
+    </div>
+  
+    <ul class="mood-list" *ngIf="!isLoading && !error">
+        <li *ngFor="let stat of moodStats" [ngStyle]="{ 'background-color': getColor(stat.mood) }">
+          <span class="color-indicator" [style.background]="getColor(stat.mood)"></span>
+          <strong>{{ stat.mood }}</strong>
+          <span>{{ stat.count }} Einträge ({{ stat.percentage }}%)</span>
+        </li>
+      </ul>
+      
+  </div>
+  

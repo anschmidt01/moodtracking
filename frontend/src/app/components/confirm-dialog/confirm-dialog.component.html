@@ -1,8 +1,12 @@
-<h2 mat-dialog-title>{{ title }}</h2>
-<div mat-dialog-content>
-  <p>{{ message }}</p>
-</div>
-<div mat-dialog-actions align="end">
-    <button mat-raised-button color="warn" (click)="close(true)">Löschen</button>
-  <button mat-button (click)="close(false)">Abbrechen</button>
-</div>
+<div class="confirm-container">
+    <h2>Möchtest du den Eintrag wirklich löschen?</h2>
+    <p>Diese Aktion kann nicht rückgängig gemacht werden.</p>
+  
+    <div class="button-row">
+        <button class="delete-btn" (click)="dialogRef.close(true)">
+            🗑️ Löschen
+          </button>
+        <button class="cancel-btn" (click)="dialogRef.close(false)">Abbrechen</button>
+    </div>
+  </div>
+  

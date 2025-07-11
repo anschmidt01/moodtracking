@@ -2,26 +2,26 @@
   <h2 class="title">Wie geht es dir heute?</h2>
   <div class="emotions">
     <button
-      *ngFor="let emotion of emotions"
-      [class.selected]="selectedEmotion() === emotion.value"
-      (click)="selectEmotion(emotion.value)"
-      [ngStyle]="{ 'background-color': emotion.color }"
+      *ngFor="let emotion of moodOptions; let i = index"
+      [class.selected]="selectedEmotion() === emotion.text"
+      (click)="selectEmotion(emotion.text)"
+      [ngStyle]="{ 'background-color': getEmotionColor(i) }"
       class="emotion-button"
     >
-      <span class="emoji">{{ emotion.icon }}</span>
-      <span class="label">{{ emotion.label }}</span>
+      <span class="emoji">{{ emotion.emoji }}</span>
+      <span class="label">{{ emotion.text }}</span>
     </button>
   </div>
 
   <h3 class="subtitle">Heutige Aktivitäten</h3>
   <div class="activities">
     <button
-      *ngFor="let activity of activities"
-      [class.active]="selectedActivities().includes(activity)"
-      (click)="toggleActivity(activity)"
+      *ngFor="let activity of activityOptions"
+      [class.active]="selectedActivities().includes(activity.text)"
+      (click)="toggleActivity(activity.text)"
       class="activity-button"
     >
-      {{ activity }}
+      {{ activity.text }}
     </button>
   </div>
 

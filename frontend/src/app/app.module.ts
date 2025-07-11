@@ -17,6 +17,9 @@ import { NgChartsModule } from 'ng2-charts';
 import { HistoryDetailComponent } from './components/history-detail/history-detail.component';
 import { EditEntryComponent } from './components/edit-entry/edit-entry.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { CategoriesComponent } from './components/settings/categories/categoriesc.component';
+import { ExportComponent } from './components/settings/export/export.component';
+import { ProfileComponent } from './components/settings/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +32,10 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MainLayoutComponent,
     HistoryDetailComponent,
     EditEntryComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    CategoriesComponent,
+    ExportComponent,
+    ProfileComponent,
     ],
   imports: [
     BrowserModule,

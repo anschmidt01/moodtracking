@@ -9,6 +9,9 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { MainLayoutComponent } from './components/layouts/main-layout/main-layout.component';
 import { HistoryDetailComponent } from './components/history-detail/history-detail.component';
 import { EditEntryComponent } from './components/edit-entry/edit-entry.component';
+import { CategoriesComponent } from './components/settings/categories/categoriesc.component';
+import { ExportComponent } from './components/settings/export/export.component';
+import { ProfileComponent } from './components/settings/profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent}, 
@@ -23,6 +26,9 @@ const routes: Routes = [
   { path: 'history/:id', component: HistoryDetailComponent},
   { path: 'edit/:id', component: EditEntryComponent},
   { path: 'detail/:id', component: HistoryDetailComponent },
+  { path :'settings/categories', component : CategoriesComponent},
+  { path :'settings/export', component : ExportComponent},
+  { path: 'settings/profile', component : ProfileComponent}
 
 ]
  },

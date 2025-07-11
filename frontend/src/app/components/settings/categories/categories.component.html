@@ -1,0 +1,36 @@
+<div class="settings-container">
+    <h2>📝 Kategorien bearbeiten</h2>
+  
+    <!-- STIMMUNGEN zuerst -->
+    <div class="section">
+      <h3>Stimmungen</h3>
+      <div class="welcome__cards">
+        <div class="card card--stats" *ngFor="let mood of moods">
+          <div class="card__icon">{{ mood.emoji }}</div>
+          <div class="card__label">{{ mood.text }}</div>
+          <button (click)="removeMood(mood)">Löschen</button>
+        </div>
+      </div>
+      <div class="input-row">
+        <input [(ngModel)]="newMoodEmoji" placeholder="Emoji z.B. 😊" maxlength="2" />
+        <input [(ngModel)]="newMoodText" placeholder="Beschreibung..." />
+        <button (click)="addMood()">Hinzufügen</button>
+      </div>
+    </div>
+  
+    <!-- AKTIVITÄTEN danach -->
+    <div class="section">
+      <h3>Aktivitäten</h3>
+      <div class="welcome__cards">
+        <div class="card card--history" *ngFor="let activity of activities">
+          <div class="card__label">{{ activity }}</div>
+          <button (click)="removeActivity(activity)">Löschen</button>
+        </div>
+      </div>
+      <div class="input-row">
+        <input [(ngModel)]="newActivity" placeholder="Neue Aktivität..." />
+        <button (click)="addActivity()">Hinzufügen</button>
+      </div>
+    </div>
+  </div>
+  

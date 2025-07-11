@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ChartData } from 'chart.js';
+import { ChartData, ChartOptions } from 'chart.js';
 
 interface MoodStatistic {
   mood: string;
@@ -19,6 +19,9 @@ export class StatisticsComponent implements OnInit {
   totalCount = 0;
   isLoading = true;
   error: string | null = null;
+  entries: any[] = [];               
+  filteredEntries: any[] = [];      
+  selectedMood: string | null = null;
 
   chartData: ChartData<'doughnut'> = {
     labels: [],
@@ -41,8 +44,71 @@ export class StatisticsComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchStatistics();
+    this.loadEntries();
   }
 
+  loadEntries(): void {
+    this.http.get<any[]>('http://localhost:3000/moods').subscribe({
+      next: (data) => {
+        this.entries = data;
+        this.filteredEntries = data;
+      },
+      error: (err) => {
+        console.error('Error loading entries:', err);
+      }
+    });
+  }
+
+  chartOptions: ChartOptions<'doughnut'> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom'
+      }
+    }
+  };
+  showDetails(entry: any): void {
+    console.log('Details angeklickt:', entry);
+    // Hier kannst du z.B. ein Modal öffnen oder Routing machen
+  }
+  
+  getEmoji(mood: string): string {
+    switch (mood.toLowerCase()) {
+      case 'schrecklich':
+        return '😞';
+      case 'schlecht':
+        return '😟';
+      case 'okay':
+        return '😐';
+      case 'gut':
+        return '🙂';
+      case 'fantastisch':
+        return '😄';
+      default:
+        return '❓';
+    }
+  }
+  
+  
+  onChartClick(event: any): void {
+    const activePoints = event?.active;
+    if (activePoints?.length > 0) {
+      const index = activePoints[0].index;
+      const mood = this.chartData.labels?.[index] as string;
+      if (mood) {
+        if (this.selectedMood === mood) {
+          // Toggle zurück: alles verstecken
+          this.selectedMood = null;
+          this.filteredEntries = [];
+        } else {
+          this.selectedMood = mood;
+          this.filteredEntries = this.entries.filter(e => e.mood === mood);
+        }
+      }
+    }
+  }
+  
+  
   fetchStatistics(): void {
     this.http.get<{ mood: string; count: number }[]>('http://localhost:3000/statistics').subscribe({
       next: (data) => {
@@ -51,6 +117,15 @@ export class StatisticsComponent implements OnInit {
           ...item,
           percentage: this.totalCount > 0 ? +(item.count / this.totalCount * 100).toFixed(1) : 0
         }));
+        this.moodStats.sort((a, b) => b.count - a.count);
+
+        this.moodStats.sort((a, b) => {
+          if (b.count === a.count) {
+            return a.mood.localeCompare(b.mood);
+          }
+          return b.count - a.count;
+        });
+        
 
         // ChartData mit festen Farben
         this.chartData = {

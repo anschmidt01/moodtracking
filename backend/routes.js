@@ -56,22 +56,12 @@ router.get('/moods', async (req, res) => {
 
 // Statistik abrufen (Counts pro Mood)
 router.get('/statistics', async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT
-        c.text AS mood,
-        COUNT(*)::int AS count
-      FROM moods m
-      JOIN categories c ON c.id = m.mood_id
-      GROUP BY c.text
-      ORDER BY count DESC
-    `);
-
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching statistics:', error);
-    res.status(500).json({ error: 'Internal server error.' });
-  }
+  const result = await pool.query(`
+    SELECT mood_id, COUNT(*)::int AS count
+    FROM moods
+    GROUP BY mood_id
+  `);
+  res.json(result.rows);
 });
 
 // Eintrag aktualisieren

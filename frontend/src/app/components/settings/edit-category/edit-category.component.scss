@@ -1,0 +1,109 @@
+.edit-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+  
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+    }
+  
+    label {
+      display: block;
+      font-weight: 500;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+    }
+  
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 12px; // RUNDE Ecken
+      background: #fff;
+      resize: vertical;
+      box-sizing: border-box;
+  
+      &:focus {
+        outline: none;
+        border-color: #2196f3;
+        box-shadow: 0 0 0 2px rgba(33,150,243,0.2);
+      }
+    }
+  
+    textarea {
+      min-height: 120px;
+    }
+  
+    .button-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+  
+      .save-btn {
+        padding: 1rem;
+        background: #d0eaff;
+        color: #333;
+        font-weight: 600;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    
+        &:hover {
+          background: #c49aff;
+        }
+      }
+      .cancel-btn {
+        padding: 1rem;
+        background: #d0eaff;
+        color: #333;
+        font-weight: 600;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        &:hover {
+            background: #c49aff;
+          }
+      }
+      
+    }
+    
+    input[type="color"] {
+        width: 100%;
+        height: 3rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 0;
+      }
+      
+      .emoji-picker-button {
+        font-size: 2rem;          // Emoji größer
+        padding: 0.75rem 1.5rem;  // mehr Innenabstand
+        border: 1px solid #ccc;
+        border-radius: 12px;      // schön abgerundet
+        background: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: box-shadow 0.2s ease;
+      
+        &:hover {
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+      }
+  }
+  

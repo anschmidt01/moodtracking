@@ -12,6 +12,7 @@ import { EditEntryComponent } from './components/edit-entry/edit-entry.component
 import { CategoriesComponent } from './components/settings/categories/categories.component';
 import { ExportComponent } from './components/settings/export/export.component';
 import { ProfileComponent } from './components/settings/profile/profile.component';
+import { EditCategoryComponent } from './components/settings/edit-category/edit-category.component';
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent}, 
@@ -28,8 +29,9 @@ const routes: Routes = [
   { path: 'detail/:id', component: HistoryDetailComponent },
   { path :'settings/categories', component : CategoriesComponent},
   { path :'settings/export', component : ExportComponent},
-  { path: 'settings/profile', component : ProfileComponent}
-
+  { path: 'settings/profile', component : ProfileComponent},
+  { path: 'edit-category/:id', component: EditCategoryComponent}
+  
 ]
  },
   { path: '**', redirectTo: ''}

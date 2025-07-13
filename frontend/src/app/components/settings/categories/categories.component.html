@@ -8,7 +8,7 @@
         <div class="card card--stats" *ngFor="let mood of moods">
           <div class="card__icon">{{ mood.emoji }}</div>
           <div class="card__label">{{ mood.text }}</div>
-          <button (click)="editMood(mood)">Bearbeiten</button>
+          <button [routerLink]="['/edit-category', mood.id]">Bearbeiten</button>
           <button (click)="confirmRemoveMood(mood)">Löschen</button>
         </div>
       </div>
@@ -25,8 +25,8 @@
       <div class="welcome__cards">
         <div class="card card--history" *ngFor="let activity of activities">
             <div class="card__label">{{ activity.text }}</div>
-            <button (click)="editActivity(activity)">Bearbeiten</button>
-          <button (click)="confirmRemoveActivity(activity)">Löschen</button>
+            <button [routerLink]="['/edit-category', activity.id]">Bearbeiten</button>
+            <button (click)="confirmRemoveActivity(activity)">Löschen</button>
         </div>
       </div>
       <div class="input-row">

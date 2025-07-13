@@ -1,0 +1,33 @@
+<div class="edit-container" *ngIf="category">
+    <h2 class="title">Kategorie bearbeiten</h2>
+  
+    <div class="input-group">
+        <label>Emoji</label>
+        <div class="emoji-picker-container">
+          <button type="button" (click)="showEmojiPicker = !showEmojiPicker" class="emoji-picker-button">
+            {{ category.emoji || '😊' }}
+          </button>
+        </div>
+        <emoji-picker
+          *ngIf="showEmojiPicker"
+          (emoji-click)="selectEmoji($event)">
+        </emoji-picker>
+      </div>
+      
+  
+    <div class="input-group">
+      <label>Bezeichnung</label>
+      <input [(ngModel)]="category.text" placeholder="Text z.B. Gut" />
+    </div>
+  
+    <div class="input-group">
+      <label>Farbe</label>
+      <input [(ngModel)]="category.color" type="color" />
+    </div>
+  
+    <div class="button-row">
+      <button class="save-btn" (click)="save()">Speichern</button>
+      <button class="cancel-btn" (click)="goBack()">Abbrechen</button>
+    </div>
+  </div>
+  

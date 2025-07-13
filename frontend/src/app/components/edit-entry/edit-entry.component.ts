@@ -21,8 +21,9 @@ export class EditEntryComponent implements OnInit {
     private categoryService: CategoryService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
         this.emotions = categories.filter(c => c.type === 'mood');
@@ -32,19 +33,20 @@ export class EditEntryComponent implements OnInit {
           next: (entries) => {
             const found = entries.find(e => e.id === id);
             if (!found) {
-              alert('Eintrag nicht gefunden');
+              alert('Eintrag nicht gefunden.');
               this.router.navigate(['/history']);
               return;
             }
             this.entry = found;
           }
         });
-      }
+      },
+      error: (err) => console.error('Fehler beim Laden der Kategorien:', err)
     });
   }
 
   isSelectedMood(mood: Category): boolean {
-    return this.entry.mood.id === mood.id;
+    return this.entry.mood?.id === mood.id;
   }
 
   selectMood(mood: Category): void {
@@ -70,7 +72,7 @@ export class EditEntryComponent implements OnInit {
       mood_id: this.entry.mood.id,
       activity_ids: this.entry.activities.map(a => a.id)
     };
-  
+
     this.moodService.updateMood(this.entry.id, payload).subscribe({
       next: () => {
         alert('Eintrag aktualisiert!');
@@ -79,7 +81,6 @@ export class EditEntryComponent implements OnInit {
       error: (err) => console.error('Fehler beim Speichern:', err)
     });
   }
-  
 
   goBack(): void {
     this.router.navigate(['/history']);

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +20,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { CategoriesComponent } from './components/settings/categories/categories.component';
 import { ExportComponent } from './components/settings/export/export.component';
 import { ProfileComponent } from './components/settings/profile/profile.component';
+import { EditCategoryComponent} from './components/settings/edit-category/edit-category.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { ProfileComponent } from './components/settings/profile/profile.componen
     CategoriesComponent,
     ExportComponent,
     ProfileComponent,
+    EditCategoryComponent,
     ],
   imports: [
     BrowserModule,
@@ -46,6 +48,8 @@ import { ProfileComponent } from './components/settings/profile/profile.componen
     BrowserAnimationsModule,
     MatDialogModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],  // <-- HIER HINZUFÜGEN
+
   providers: [],
   bootstrap: [AppComponent]
 })

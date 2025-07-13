@@ -2,10 +2,10 @@
   <h2 class="title">Wie geht es dir heute?</h2>
   <div class="emotions">
     <button
-      *ngFor="let emotion of moodOptions; let i = index"
+      *ngFor="let emotion of moodOptions"
       [class.selected]="selectedEmotion() === emotion.text"
       (click)="selectEmotion(emotion.text)"
-      [ngStyle]="{ 'background-color': getEmotionColor(i) }"
+      [ngStyle]="{ 'background-color': emotion.color || '#f0f0f0' }"
       class="emotion-button"
     >
       <span class="emoji">{{ emotion.emoji }}</span>
@@ -26,11 +26,11 @@
   </div>
 
   <textarea
-  placeholder="Notiz hinzufügen (z.B.: Trigger-Ereignisse, positive Moment oder ähnliches)"
-  [value]="note()"
-  (input)="onNoteInput($event)"
-  class="note-input"
-></textarea>
+    placeholder="Notiz hinzufügen (z.B.: Trigger-Ereignisse, positive Momente oder ähnliches)"
+    [value]="note()"
+    (input)="onNoteInput($event)"
+    class="note-input"
+  ></textarea>
 
   <button class="save-button" (click)="saveEntry()">Speichern</button>
 </div>

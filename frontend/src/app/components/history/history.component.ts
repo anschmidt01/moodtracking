@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MoodService, MoodEntry } from 'src/app/services/mood.service';
+import { CategoryService, Category } from 'src/app/services/category.service';
 
 @Component({
   selector: 'app-history',
@@ -9,6 +10,7 @@ import { MoodService, MoodEntry } from 'src/app/services/mood.service';
 })
 export class HistoryComponent implements OnInit {
   entries: MoodEntry[] = [];
+  categoryMap = new Map<string, Category>();
 
   chartLabels: string[] = [];
   chartData: number[] = [];
@@ -17,11 +19,23 @@ export class HistoryComponent implements OnInit {
   filterInput: string = '';
   filterValue: string = ''; // z.B. '2025-07' oder '2025-W28'
 
-  constructor(private moodService: MoodService) {}
+  constructor(private moodService: MoodService, private categoryService: CategoryService) {}
 
   ngOnInit() {
-    this.loadEntries();
-  }
+    this.categoryService.getCategories().subscribe({
+      next: (cats) => {
+        // Map bauen für schnelles Lookup
+        cats
+          .filter(c => c.type === 'mood')
+          .forEach(c => this.categoryMap.set(c.text, c));
+  
+        // Danach die Mood-Einträge laden
+        this.loadEntries();
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Kategorien:', err);
+      }
+    });  }
 
   loadEntries() {
     this.moodService.getMoods().subscribe({
@@ -93,37 +107,16 @@ export class HistoryComponent implements OnInit {
   }
 
   getColor(mood: string): string {
-    switch (mood) {
-      case 'Schrecklich':
-        return '#fde2e2';
-      case 'Schlecht':
-        return '#f8d7da';
-      case 'Okay':
-        return '#fff3cd';
-      case 'Gut':
-        return '#d4edda';
-      case 'Fantastisch':
-        return '#d1e7dd';
-      default:
-        return '#f0f0f0';
-    }
+    const cat = this.categoryMap.get(mood);
+    if (!cat) return '#f0f0f0';
+    // Falls du Farben pro Mood in der DB speichern willst, kannst du das hier nehmen.
+    // Sonst verwenden wir ein Default-Pastell.
+    return '#d4edda';
   }
-
+  
   getIcon(mood: string): string {
-    switch (mood) {
-      case 'Schrecklich':
-        return '😞';
-      case 'Schlecht':
-        return '😟';
-      case 'Okay':
-        return '😐';
-      case 'Gut':
-        return '🙂';
-      case 'Fantastisch':
-        return '😄';
-      default:
-        return '❓';
-    }
+    const cat = this.categoryMap.get(mood);
+    return cat?.emoji || '❓';
   }
 
   formatDate(dateStr: string): string {

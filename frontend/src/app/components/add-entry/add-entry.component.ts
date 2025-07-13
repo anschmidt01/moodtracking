@@ -37,11 +37,6 @@ export class AddEntryComponent implements OnInit {
     });
   }
 
-  getEmotionColor(index: number): string {
-    const colors = ['#fde2e2', '#f8d7da', '#fff3cd', '#d4edda', '#d1e7dd'];
-    return colors[index % colors.length];
-  }
-
   selectEmotion(emotion: string) {
     this.selectedEmotion.set(emotion);
   }

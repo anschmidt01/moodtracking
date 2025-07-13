@@ -7,6 +7,8 @@ export interface Category {
   type: 'mood' | 'activity';
   text: string;
   emoji?: string;
+  color?: string;
+
 }
 
 @Injectable({

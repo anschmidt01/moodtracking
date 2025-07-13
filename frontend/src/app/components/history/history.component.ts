@@ -108,10 +108,7 @@ export class HistoryComponent implements OnInit {
 
   getColor(mood: string): string {
     const cat = this.categoryMap.get(mood);
-    if (!cat) return '#f0f0f0';
-    // Falls du Farben pro Mood in der DB speichern willst, kannst du das hier nehmen.
-    // Sonst verwenden wir ein Default-Pastell.
-    return '#d4edda';
+  return cat?.color || '#f0f0f0';
   }
   
   getIcon(mood: string): string {

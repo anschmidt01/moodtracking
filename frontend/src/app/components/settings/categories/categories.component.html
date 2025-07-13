@@ -23,9 +23,9 @@
       <h3>Aktivitäten</h3>
       <div class="welcome__cards">
         <div class="card card--history" *ngFor="let activity of activities">
-          <div class="card__label">{{ activity }}</div>
-          <button (click)="removeActivity(activity)">Löschen</button>
-        </div>
+            <div class="card__label">{{ activity.text }}</div>
+            <button (click)="removeActivity(activity)">Löschen</button>
+          </div>
       </div>
       <div class="input-row">
         <input [(ngModel)]="newActivity" placeholder="Neue Aktivität..." />

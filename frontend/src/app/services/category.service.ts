@@ -6,8 +6,8 @@ export interface Category {
   id: number;
   type: 'mood' | 'activity';
   text: string;
-  emoji?: string;
-  color?: string;
+  emoji: string;
+  color: string;
 
 }
 

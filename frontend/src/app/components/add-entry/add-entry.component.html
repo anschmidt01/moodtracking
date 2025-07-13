@@ -3,8 +3,8 @@
   <div class="emotions">
     <button
       *ngFor="let emotion of moodOptions"
-      [class.selected]="selectedEmotion() === emotion.text"
-      (click)="selectEmotion(emotion.text)"
+      [class.selected]="selectedEmotion() === emotion.id"
+      (click)="selectEmotion(emotion.id)"
       [ngStyle]="{ 'background-color': emotion.color || '#f0f0f0' }"
       class="emotion-button"
     >
@@ -17,8 +17,8 @@
   <div class="activities">
     <button
       *ngFor="let activity of activityOptions"
-      [class.active]="selectedActivities().includes(activity.text)"
-      (click)="toggleActivity(activity.text)"
+      [class.active]="selectedActivities().includes(activity.id)"
+      (click)="toggleActivity(activity.id)"
       class="activity-button"
     >
       {{ activity.text }}

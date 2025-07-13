@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MoodService, MoodEntry } from 'src/app/services/mood.service';
+import { MoodService } from 'src/app/services/mood.service';
 import { CategoryService, Category } from 'src/app/services/category.service';
 
 @Component({
@@ -13,8 +13,8 @@ export class AddEntryComponent implements OnInit {
   moodOptions: Category[] = [];
   activityOptions: Category[] = [];
 
-  selectedEmotion = signal<string | null>(null);
-  selectedActivities = signal<string[]>([]);
+  selectedEmotion = signal<number | null>(null);
+  selectedActivities = signal<number[]>([]);
   note = signal<string>('');
 
   @Output() entrySaved = new EventEmitter<any>();
@@ -37,16 +37,16 @@ export class AddEntryComponent implements OnInit {
     });
   }
 
-  selectEmotion(emotion: string) {
-    this.selectedEmotion.set(emotion);
+  selectEmotion(id: number) {
+    this.selectedEmotion.set(id);
   }
 
-  toggleActivity(activity: string) {
+  toggleActivity(id: number) {
     const current = this.selectedActivities();
-    if (current.includes(activity)) {
-      this.selectedActivities.set(current.filter(a => a !== activity));
+    if (current.includes(id)) {
+      this.selectedActivities.set(current.filter(a => a !== id));
     } else {
-      this.selectedActivities.set([...current, activity]);
+      this.selectedActivities.set([...current, id]);
     }
   }
 
@@ -63,9 +63,9 @@ export class AddEntryComponent implements OnInit {
       return;
     }
 
-    const entry: MoodEntry = {
-      mood: this.selectedEmotion() as string,
-      activities: this.selectedActivities(),
+    const entry = {
+      mood_id: this.selectedEmotion() as number,
+      activity_ids: this.selectedActivities(),
       notes: this.note().trim(),
       date: new Date().toISOString(),
     };

@@ -1,41 +1,36 @@
-<div class="edit-container">
+<div class="edit-container" *ngIf="entry">
     <h2 class="title">Eintrag bearbeiten</h2>
   
     <div class="emotions">
       <button
         *ngFor="let emotion of emotions"
-        [class.selected]="entry?.mood === emotion.label"
-        (click)="entry!.mood = emotion.label"
+        [class.selected]="isSelectedMood(emotion)"
+        (click)="selectMood(emotion)"
         [ngStyle]="{ 'background-color': emotion.color }"
         class="emotion-button"
       >
-        <span class="emoji">{{ emotion.icon }}</span>
-        <span class="label">{{ emotion.label }}</span>
+        <span class="emoji">{{ emotion.emoji }}</span>
+        <span class="label">{{ emotion.text }}</span>
       </button>
     </div>
   
     <h3 class="subtitle">Aktivitäten</h3>
     <div class="activities">
       <button
-        *ngFor="let activity of allActivities"
-        [class.active]="entry?.activities?.includes(activity)"
+        *ngFor="let activity of activities"
+        [class.active]="isActivitySelected(activity)"
         (click)="toggleActivity(activity)"
         class="activity-button"
-        type="button"
       >
-        {{ activity }}
+        {{ activity.text }}
       </button>
     </div>
   
-    <textarea
-      placeholder="Notiz bearbeiten (z.B.: Trigger-Ereignisse, positive Momente oder ähnliches)"
-      [(ngModel)]="entry!.notes"
-      class="note-input"
-    ></textarea>
+    <textarea [(ngModel)]="entry.notes" class="note-input"></textarea>
   
     <div class="button-row">
-      <button class="save-button" (click)="save()">Speichern</button>
-      <button (click)="router.navigate(['/detail', entry?.id])">Abbrechen</button>
+      <button (click)="save()">Speichern</button>
+      <button (click)="goBack()">Abbrechen</button>
     </div>
   </div>
   

@@ -9,7 +9,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { MainLayoutComponent } from './components/layouts/main-layout/main-layout.component';
 import { HistoryDetailComponent } from './components/history-detail/history-detail.component';
 import { EditEntryComponent } from './components/edit-entry/edit-entry.component';
-import { CategoriesComponent } from './components/settings/categories/categoriesc.component';
+import { CategoriesComponent } from './components/settings/categories/categories.component';
 import { ExportComponent } from './components/settings/export/export.component';
 import { ProfileComponent } from './components/settings/profile/profile.component';
 

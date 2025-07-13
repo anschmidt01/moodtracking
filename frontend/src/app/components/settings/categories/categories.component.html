@@ -1,14 +1,15 @@
 <div class="settings-container">
     <h2>📝 Kategorien bearbeiten</h2>
   
-    <!-- STIMMUNGEN zuerst -->
+    <!-- STIMMUNGEN -->
     <div class="section">
       <h3>Stimmungen</h3>
       <div class="welcome__cards">
         <div class="card card--stats" *ngFor="let mood of moods">
           <div class="card__icon">{{ mood.emoji }}</div>
           <div class="card__label">{{ mood.text }}</div>
-          <button (click)="removeMood(mood)">Löschen</button>
+          <button (click)="editMood(mood)">Bearbeiten</button>
+          <button (click)="confirmRemoveMood(mood)">Löschen</button>
         </div>
       </div>
       <div class="input-row">
@@ -18,14 +19,15 @@
       </div>
     </div>
   
-    <!-- AKTIVITÄTEN danach -->
+    <!-- AKTIVITÄTEN -->
     <div class="section">
       <h3>Aktivitäten</h3>
       <div class="welcome__cards">
         <div class="card card--history" *ngFor="let activity of activities">
             <div class="card__label">{{ activity.text }}</div>
-            <button (click)="removeActivity(activity)">Löschen</button>
-          </div>
+            <button (click)="editActivity(activity)">Bearbeiten</button>
+          <button (click)="confirmRemoveActivity(activity)">Löschen</button>
+        </div>
       </div>
       <div class="input-row">
         <input [(ngModel)]="newActivity" placeholder="Neue Aktivität..." />

@@ -3,18 +3,22 @@ import { pool } from './db.js';
 
 export const router = express.Router();
 
-// Neue Stimmung speichern
+// Eintrag erstellen
 router.post('/moods', async (req, res) => {
   try {
-    const { date, mood, activities, notes } = req.body;
+    const { date, mood_id, activity_ids, notes } = req.body;
 
-    if (!date || !mood) {
-      return res.status(400).json({ error: 'Date and mood are required.' });
+    if (!date || !mood_id) {
+      return res.status(400).json({ error: 'Date and mood_id are required.' });
     }
 
     const result = await pool.query(
-      'INSERT INTO moods (date, mood, activities, notes) VALUES ($1, $2, $3, $4) RETURNING *',
-      [date, mood, activities, notes]
+      `
+      INSERT INTO moods (date, mood_id, activity_ids, notes)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+      `,
+      [date, mood_id, activity_ids, notes]
     );
 
     res.status(201).json(result.rows[0]);
@@ -24,10 +28,25 @@ router.post('/moods', async (req, res) => {
   }
 });
 
-// Alle Stimmungen abrufen
+// Alle Einträge abrufen (inkl. Mood & Activities)
 router.get('/moods', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM moods ORDER BY date DESC');
+    const result = await pool.query(`
+      SELECT
+        m.id,
+        m.date,
+        m.notes,
+        row_to_json(mood_cat) AS mood,
+        (
+          SELECT json_agg(row_to_json(act_cat))
+          FROM unnest(m.activity_ids) AS aid
+          JOIN categories act_cat ON act_cat.id = aid
+        ) AS activities
+      FROM moods m
+      JOIN categories mood_cat ON mood_cat.id = m.mood_id
+      ORDER BY m.date DESC
+    `);
+
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching moods:', error);
@@ -35,14 +54,19 @@ router.get('/moods', async (req, res) => {
   }
 });
 
-// Statistik abrufen
+// Statistik abrufen (Counts pro Mood)
 router.get('/statistics', async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT mood, COUNT(*)::int AS count
-      FROM moods
-      GROUP BY mood
+      SELECT
+        c.text AS mood,
+        COUNT(*)::int AS count
+      FROM moods m
+      JOIN categories c ON c.id = m.mood_id
+      GROUP BY c.text
+      ORDER BY count DESC
     `);
+
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching statistics:', error);
@@ -54,11 +78,16 @@ router.get('/statistics', async (req, res) => {
 router.put('/moods/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { date, mood, activities, notes } = req.body;
+    const { date, mood_id, activity_ids, notes } = req.body;
 
     const result = await pool.query(
-      'UPDATE moods SET date=$1, mood=$2, activities=$3, notes=$4 WHERE id=$5 RETURNING *',
-      [date, mood, activities, notes, id]
+      `
+      UPDATE moods
+      SET date=$1, mood_id=$2, activity_ids=$3, notes=$4
+      WHERE id=$5
+      RETURNING *
+      `,
+      [date, mood_id, activity_ids, notes, id]
     );
 
     if (result.rows.length === 0) {

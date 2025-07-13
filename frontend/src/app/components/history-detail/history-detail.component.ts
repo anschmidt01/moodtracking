@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MoodService, MoodEntry } from 'src/app/services/mood.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { CategoryService, Category } from 'src/app/services/category.service';
 
 @Component({
   selector: 'app-history-detail',
@@ -12,21 +13,32 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 })
 export class HistoryDetailComponent implements OnInit {
   entry: MoodEntry | undefined;
+  categoryMap = new Map<string, Category>();
 
   constructor(
     private route: ActivatedRoute,
     public router: Router,
     private moodService: MoodService,
+    private categoryService: CategoryService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.moodService.getMoods().subscribe({
-      next: (entries) => {
-        this.entry = entries.find(e => e.id === Number(id));
+    this.categoryService.getCategories().subscribe({
+      next: (cats) => {
+        cats
+          .filter(c => c.type === 'mood')
+          .forEach(c => this.categoryMap.set(c.text, c));
+  
+        const id = this.route.snapshot.paramMap.get('id');
+        this.moodService.getMoods().subscribe({
+          next: (entries) => {
+            this.entry = entries.find(e => e.id === Number(id));
+          },
+          error: (err) => console.error('Fehler beim Laden:', err)
+        });
       },
-      error: (err) => console.error('Fehler beim Laden:', err)
+      error: (err) => console.error('Fehler beim Laden der Kategorien:', err)
     });
   }
 
@@ -47,37 +59,13 @@ export class HistoryDetailComponent implements OnInit {
     }
   }
   getColor(mood?: string): string {
-    switch (mood) {
-      case 'Schrecklich':
-        return '#fde2e2';
-      case 'Schlecht':
-        return '#f8d7da';
-      case 'Okay':
-        return '#fff3cd';
-      case 'Gut':
-        return '#d4edda';
-      case 'Fantastisch':
-        return '#d1e7dd';
-      default:
-        return '#f0f0f0';
-    }
+    const cat = mood ? this.categoryMap.get(mood) : undefined;
+  return cat?.color || '#f0f0f0';
   }
   
   getIcon(mood?: string): string {
-    switch (mood) {
-      case 'Schrecklich':
-        return '😞';
-      case 'Schlecht':
-        return '😟';
-      case 'Okay':
-        return '😐';
-      case 'Gut':
-        return '🙂';
-      case 'Fantastisch':
-        return '😄';
-      default:
-        return '❓';
-    }
+    const cat = mood ? this.categoryMap.get(mood) : undefined;
+    return cat?.emoji || '❓';
   }
   
   formatDate(dateStr?: string): string {

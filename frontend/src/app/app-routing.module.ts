@@ -27,11 +27,13 @@ const routes: Routes = [
   { path: 'history/:id', component: HistoryDetailComponent},
   { path: 'edit/:id', component: EditEntryComponent},
   { path: 'detail/:id', component: HistoryDetailComponent },
-  { path :'settings/categories', component : CategoriesComponent},
-  { path :'settings/export', component : ExportComponent},
+  {
+    path: 'settings/categories',
+    component: CategoriesComponent,
+  },  { path :'settings/export', component : ExportComponent},
   { path: 'settings/profile', component : ProfileComponent},
-  { path: 'edit-category/:id', component: EditCategoryComponent}
-  
+  { path: 'edit-category', component: EditCategoryComponent },
+  { path: 'edit-category/:id', component: EditCategoryComponent },
 ]
  },
   { path: '**', redirectTo: ''}

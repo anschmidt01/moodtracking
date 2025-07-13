@@ -3,13 +3,13 @@ import {pool} from './db.js';
 (async () => {
   //Mood Tabelle
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS moods (
-      id SERIAL PRIMARY KEY,
-      date DATE NOT NULL,
-      mood TEXT NOT NULL,
-      activities TEXT[],
-      notes TEXT
-    )
+    CREATE TABLE moods (
+  id SERIAL PRIMARY KEY,
+  date DATE NOT NULL,
+  mood_id INTEGER REFERENCES categories(id) NOT NULL,
+  activity_ids INTEGER[],
+  notes TEXT
+)
   `);
     //Kategorien Tabelle
   await pool.query(`

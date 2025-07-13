@@ -11,7 +11,8 @@ import { Category } from 'src/app/services/category.service';
 })
 export class EditCategoryComponent implements OnInit {
   category!: Category;
-
+  isNew = false;        // <----- Das hier hinzugefügt
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -19,36 +20,66 @@ export class EditCategoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.categoryService.getCategories().subscribe({
-      next: (categories) => {
-        const found = categories.find(c => c.id === id);
-        if (!found) {
-          alert('Kategorie nicht gefunden!');
-          this.router.navigate(['/settings']);
-          return;
-        }
-        this.category = { ...found };
-      },
-      error: (err) => console.error('Fehler beim Laden:', err)
-    });
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      // Bearbeiten
+      const id = Number(idParam);
+      if (isNaN(id)) {
+        alert('Ungültige ID!');
+        this.router.navigate(['/settings']);
+        return;
+      }
+
+      this.categoryService.getCategories().subscribe({
+        next: (categories) => {
+          const found = categories.find(c => c.id === id);
+          if (!found) {
+            alert('Kategorie nicht gefunden!');
+            this.router.navigate(['/settings']);
+            return;
+          }
+          this.category = { ...found };
+        },
+        error: (err) => console.error('Fehler beim Laden:', err)
+      });
+    } else {
+      // Neu erstellen
+      this.isNew = true;
+      this.category = {
+        id: 0,
+        type: 'mood',
+        text: '',
+        emoji: '',
+        color: '#cccccc'
+      };
+    }
   }
 
   save(): void {
-    this.categoryService.updateCategory(this.category.id, this.category).subscribe({
-      next: () => {
-        alert('Kategorie aktualisiert!');
-        this.router.navigate(['/settings']);
-      },
-      error: (err) => console.error('Fehler beim Speichern:', err)
-    });
+    if (this.isNew) {
+      this.categoryService.createCategory(this.category).subscribe({
+        next: () => {
+          alert('Kategorie erstellt!');
+          this.router.navigate(['/settings/categories']);
+        },
+        error: (err) => console.error('Fehler beim Erstellen:', err)
+      });
+    } else {
+      this.categoryService.updateCategory(this.category.id, this.category).subscribe({
+        next: () => {
+          alert('Kategorie aktualisiert!');
+          this.router.navigate(['/settings/categories']);
+        },
+        error: (err) => console.error('Fehler beim Aktualisieren:', err)
+      });
+    }
   }
 
   goBack(): void {
     this.router.navigate(['/settings/categories']);
   }
 
-  
+
   showEmojiPicker = false;
 
 selectEmoji(event: any) {

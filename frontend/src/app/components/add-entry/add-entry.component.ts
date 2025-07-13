@@ -67,8 +67,9 @@ export class AddEntryComponent implements OnInit {
       mood_id: this.selectedEmotion() as number,
       activity_ids: this.selectedActivities(),
       notes: this.note().trim(),
-      date: new Date().toISOString(),
+      date: new Date().toISOString().split('T')[0],
     };
+    console.log('Eintrag wird gesendet:', entry);
 
     this.moodService.saveMood(entry).subscribe({
       next: (response) => {

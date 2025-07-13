@@ -5,28 +5,31 @@
     <div class="section">
       <h3>Stimmungen</h3>
       <div class="welcome__cards">
-        <div class="card card--stats" *ngFor="let mood of moods">
+        <div
+          class="card card--stats"
+          *ngFor="let mood of moods"
+          [ngStyle]="{'background-color': mood.color || '#ffffff'}"
+        >
           <div class="card__icon">{{ mood.emoji }}</div>
           <div class="card__label">{{ mood.text }}</div>
           <button [routerLink]="['/edit-category', mood.id]">Bearbeiten</button>
           <button (click)="confirmRemoveMood(mood)">Löschen</button>
         </div>
+      
+        <div class="card card--stats add-card">
+          <button [routerLink]="['/edit-category']" class="add-card__button">
+            ➕          </button>
+        </div>
       </div>
-      <div class="input-row">
-        <input [(ngModel)]="newMoodEmoji" placeholder="Emoji z.B. 😊" maxlength="2" />
-        <input [(ngModel)]="newMoodText" placeholder="Beschreibung..." />
-        <button (click)="addMood()">Hinzufügen</button>
-      </div>
-    </div>
-  
+        
     <!-- AKTIVITÄTEN -->
     <div class="section">
       <h3>Aktivitäten</h3>
       <div class="welcome__cards">
         <div class="card card--history" *ngFor="let activity of activities">
-            <div class="card__label">{{ activity.text }}</div>
-            <button [routerLink]="['/edit-category', activity.id]">Bearbeiten</button>
-            <button (click)="confirmRemoveActivity(activity)">Löschen</button>
+          <div class="card__label">{{ activity.text }}</div>
+          <button [routerLink]="['/edit-category', activity.id]">Bearbeiten</button>
+          <button (click)="confirmRemoveActivity(activity)">Löschen</button>
         </div>
       </div>
       <div class="input-row">

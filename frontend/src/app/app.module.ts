@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -21,6 +22,7 @@ import { CategoriesComponent } from './components/settings/categories/categories
 import { ExportComponent } from './components/settings/export/export.component';
 import { ProfileComponent } from './components/settings/profile/profile.component';
 import { EditCategoryComponent} from './components/settings/edit-category/edit-category.component';
+import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { EditCategoryComponent} from './components/settings/edit-category/edit-c
     ExportComponent,
     ProfileComponent,
     EditCategoryComponent,
+    InfoDialogComponent
     ],
   imports: [
     BrowserModule,
@@ -46,7 +49,8 @@ import { EditCategoryComponent} from './components/settings/edit-category/edit-c
     NgChartsModule,
     FormsModule,
     BrowserAnimationsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],  // <-- HIER HINZUFÜGEN
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CategoryService, Category } from 'src/app/services/category.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { InfoDialogComponent } from '../../info-dialog/info-dialog.component';
 
 @Component({
   selector: 'app-categories',
@@ -73,9 +74,21 @@ export class CategoriesComponent implements OnInit {
   removeMood(mood: Category): void {
     this.categoryService.deleteCategory(mood.id).subscribe({
       next: () => this.loadCategories(),
-      error: (err) => console.error('Fehler beim Löschen der Stimmung:', err)
+      error: (err) => {
+        console.error('Fehler beim Löschen der Stimmung:', err);
+        const message =
+          err?.error?.error ||
+          'Fehler beim Löschen der Stimmung.';
+        this.dialog.open(InfoDialogComponent, {
+          data: {
+            title: 'Löschen nicht möglich',
+            message
+          }
+        });
+      }
     });
   }
+  
 
   confirmRemoveActivity(activity: Category): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

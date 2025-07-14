@@ -32,6 +32,8 @@ export class CategoryService {
   }
 
   deleteCategory(id: number): Observable<void> {
+    console.log('DELETE request:', `${this.apiUrl}/${id}`);
+
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

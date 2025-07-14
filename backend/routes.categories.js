@@ -67,12 +67,23 @@ categoriesRouter.put('/:id', async (req, res) => {
 
 // Kategorie löschen
 categoriesRouter.delete('/:id', async (req, res) => {
-  try {
     const { id } = req.params;
-    await pool.query('DELETE FROM categories WHERE id=$1', [id]);
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error deleting category:', error);
-    res.status(500).json({ error: 'Internal server error.' });
-  }
-});
+  
+    try {
+      // prüfen, ob es moods gibt, die diese mood_id nutzen
+      const moodsUsing = await pool.query('SELECT COUNT(*) FROM moods WHERE mood_id = $1', [id]);
+  
+      if (Number(moodsUsing.rows[0].count) > 0) {
+        return res.status(400).json({
+          error: 'Diese Kategorie wird noch von bestehenden Einträgen verwendet und kann nicht gelöscht werden.'
+        });
+      }
+  
+      await pool.query('DELETE FROM categories WHERE id=$1', [id]);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      res.status(500).json({ error: 'Internal server error.' });
+    }
+  });
+  

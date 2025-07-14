@@ -13,6 +13,7 @@ import { CategoriesComponent } from './components/settings/categories/categories
 import { ExportComponent } from './components/settings/export/export.component';
 import { ProfileComponent } from './components/settings/profile/profile.component';
 import { EditCategoryComponent } from './components/settings/edit-category/edit-category.component';
+import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent}, 
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'settings/profile', component : ProfileComponent},
   { path: 'edit-category', component: EditCategoryComponent },
   { path: 'edit-category/:id', component: EditCategoryComponent },
+  { path: 'info-dialog', component: InfoDialogComponent}
 ]
  },
   { path: '**', redirectTo: ''}

@@ -3,6 +3,7 @@ import { CategoryService, Category } from 'src/app/services/category.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { InfoDialogComponent } from '../../info-dialog/info-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-categories',
@@ -17,7 +18,9 @@ export class CategoriesComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -111,4 +114,8 @@ export class CategoriesComponent implements OnInit {
       error: (err) => console.error('Fehler beim Löschen der Aktivität:', err)
     });
   }
+  goToSettings(): void {
+    this.router.navigate(['/settings']);
+  }
+  
 }

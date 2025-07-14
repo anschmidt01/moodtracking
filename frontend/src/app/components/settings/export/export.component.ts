@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-export',
@@ -7,6 +8,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./export.component.scss']
 })
 export class ExportComponent {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
+
   exportData() {
     const data = {
       activities: ['Arbeit', 'Sport'],
@@ -20,5 +26,8 @@ export class ExportComponent {
     a.download = 'export.json';
     a.click();
     window.URL.revokeObjectURL(url);
+  }
+  goToSettings(): void {
+    this.router.navigate(['/settings']);
   }
 }

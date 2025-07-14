@@ -30,10 +30,14 @@ export class HistoryComponent implements OnInit {
   }
   loadEntries(): void {
     this.moodService.getMoods().subscribe({
-      next: (data) => this.entries.set(data),
+      next: (data) => {
+        const sorted = data.sort((a, b) => b.id - a.id);
+        this.entries.set(sorted);
+      },
       error: (err) => console.error('Fehler beim Laden der Einträge:', err)
     });
   }
+  
  // Computed Labels
  chartLabels = computed(() => {
   const grouped: { [key: string]: number } = {};

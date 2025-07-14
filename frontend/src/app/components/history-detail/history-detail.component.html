@@ -1,4 +1,4 @@
-<div *ngIf="entry as e" class="detail-container" [ngStyle]="{ 'background-color': getColor(e.mood) }">
+<div *ngIf="entry() as e" class="detail-container" [ngStyle]="{ 'background-color': getColor(e.mood) }">
     <h2 class="title">
       {{ getIcon(e.mood) }} {{ e.mood.text }} am {{ formatDate(e.date) }}
     </h2>

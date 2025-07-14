@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MoodService } from 'src/app/services/mood.service';
+import { MoodService, MoodEntry } from 'src/app/services/mood.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { CategoryService, Category } from 'src/app/services/category.service';
@@ -12,15 +12,8 @@ import { CategoryService, Category } from 'src/app/services/category.service';
   styleUrls: ['./history-detail.component.scss']
 })
 export class HistoryDetailComponent implements OnInit {
-  entry:
-    | {
-        id: number;
-        date: string;
-        mood: Category;
-        activities: Category[];
-        notes: string;
-      }
-    | undefined;
+  entry = signal<MoodEntry | undefined>(undefined);
+
 
   constructor(
     private route: ActivatedRoute,
@@ -33,15 +26,16 @@ export class HistoryDetailComponent implements OnInit {
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.moodService.getMoods().subscribe({
-      next: (entries) => {
-        const found = entries.find((e) => e.id === id);
+      next: (data) => {
+        const found = data.find((e) => e.id === id);
         if (!found) {
           alert('Eintrag nicht gefunden.');
           this.router.navigate(['/history']);
           return;
-        }
-        this.entry = found;
-      },
+        }else {
+        this.entry.set(found);
+      }
+    },
       error: (err) => console.error('Fehler beim Laden:', err)
     });
   }
@@ -54,42 +48,39 @@ export class HistoryDetailComponent implements OnInit {
     return mood?.emoji || '❓';
   }
   getActivitiesText(): string {
-    if (!this.entry?.activities?.length) {
+    const current = this.entry();
+    if (!current || !current.activities?.length) {
       return 'Keine Aktivitäten';
     }
-    return this.entry.activities.map(a => a.text).join(', ');
+    return current.activities.map(a => a.text).join(', ');
   }
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString('de-DE', {
       weekday: 'long',
       day: 'numeric',
-      month: 'long',
-      year: 'numeric'
+      month: 'long'
     });
   }
 
   formatTime(dateStr: string): string {
     const date = new Date(dateStr);
-    return date.toLocaleTimeString('de-DE');
+    return date.toLocaleTimeString('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
   delete(): void {
-    if (!this.entry?.id) return;
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Eintrag löschen',
-        message: 'Möchtest du diesen Eintrag wirklich löschen?'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.moodService.deleteMood(this.entry!.id).subscribe({
-          next: () => this.router.navigate(['/history']),
-          error: (err) => console.error('Fehler beim Löschen:', err)
-        });
-      }
-    });
+    const current = this.entry();
+    if (current && confirm('Willst du diesen Eintrag wirklich löschen?')) {
+      this.moodService.deleteMood(current.id).subscribe({
+        next: () => {
+          alert('Eintrag gelöscht.');
+          this.router.navigate(['/history']);
+        },
+        error: (err) => console.error('Fehler beim Löschen:', err)
+      });
+    }
   }
 }

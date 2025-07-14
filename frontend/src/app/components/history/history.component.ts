@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MoodService } from 'src/app/services/mood.service';
+import { Component, signal, computed, OnInit } from '@angular/core';
+import { MoodService, MoodEntry } from 'src/app/services/mood.service';
 import { CategoryService, Category } from 'src/app/services/category.service';
 
 @Component({
@@ -9,24 +9,15 @@ import { CategoryService, Category } from 'src/app/services/category.service';
   styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent implements OnInit {
-  entries: {
-    id: number;
-    date: string;
-    mood: Category;
-    activities: Category[];
-    notes: string;
-  }[] = [];
-
+  entries = signal<MoodEntry[]>([]);
   categoryMap = new Map<number, Category>();
+  groupMode = signal<'day' | 'month' | 'week'>('day');
+  filterInput = signal<string>('');
+  filterValue = signal<string>('');
 
-  chartLabels: string[] = [];
-  chartData: number[] = [];
-
-  groupMode: 'day' | 'month' | 'week' = 'day';
-  filterInput = '';
-  filterValue = '';
-
-  constructor(private moodService: MoodService, private categoryService: CategoryService) {}
+  constructor(
+    private moodService: MoodService, 
+    private categoryService: CategoryService) {}
 
   ngOnInit() {
     this.categoryService.getCategories().subscribe({
@@ -37,55 +28,75 @@ export class HistoryComponent implements OnInit {
       error: (err) => console.error('Fehler beim Laden der Kategorien:', err)
     });
   }
-
-  loadEntries() {
+  loadEntries(): void {
     this.moodService.getMoods().subscribe({
-      next: (data) => {
-        this.entries = data;
-        this.prepareChartData();
-      },
-      error: (err) => console.error('Fehler beim Laden:', err)
+      next: (data) => this.entries.set(data),
+      error: (err) => console.error('Fehler beim Laden der Einträge:', err)
     });
   }
+ // Computed Labels
+ chartLabels = computed(() => {
+  const grouped: { [key: string]: number } = {};
 
-  prepareChartData() {
-    const grouped: { [key: string]: number } = {};
+  this.entries().forEach(entry => {
+    const dateObj = new Date(entry.date);
+    let key = '';
 
-    this.entries.forEach(entry => {
-      const dateObj = new Date(entry.date);
-      let key = '';
+    if (this.groupMode() === 'day') {
+      key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+    } else if (this.groupMode() === 'month') {
+      key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}`;
+    } else if (this.groupMode() === 'week') {
+      const janFirst = new Date(dateObj.getFullYear(), 0, 1);
+      const days = Math.floor((dateObj.getTime() - janFirst.getTime()) / (24 * 60 * 60 * 1000));
+      const week = Math.ceil((days + janFirst.getDay() + 1) / 7);
+      key = `${dateObj.getFullYear()}-W${week.toString().padStart(2, '0')}`;
+    }
 
-      if (this.groupMode === 'day') {
-        key = `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().padStart(2,'0')}-${dateObj.getDate().toString().padStart(2,'0')}`;
-      } else if (this.groupMode === 'month') {
-        key = `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().padStart(2,'0')}`;
-      } else if (this.groupMode === 'week') {
-        const janFirst = new Date(dateObj.getFullYear(), 0, 1);
-        const days = Math.floor((dateObj.getTime() - janFirst.getTime()) / (24*60*60*1000));
-        const week = Math.ceil((days + janFirst.getDay() + 1) / 7);
-        key = `${dateObj.getFullYear()}-W${week.toString().padStart(2,'0')}`;
-      }
+    if (this.filterValue() && !key.startsWith(this.filterValue())) return;
 
-      if (this.filterValue && !key.startsWith(this.filterValue)) return;
+    grouped[key] = (grouped[key] || 0) + 1;
+  });
 
-      grouped[key] = (grouped[key] || 0) + 1;
-    });
+  return Object.keys(grouped).sort();
+});
 
-    const sortedKeys = Object.keys(grouped).sort();
-    this.chartLabels = sortedKeys;
-    this.chartData = sortedKeys.map(k => grouped[k]);
-  }
+// Computed Data
+chartData = computed(() => {
+  const grouped: { [key: string]: number } = {};
 
-  applyFilter() {
-    this.filterValue = this.filterInput.trim();
-    this.prepareChartData();
-  }
+  this.entries().forEach(entry => {
+    const dateObj = new Date(entry.date);
+    let key = '';
 
-  resetFilter() {
-    this.filterInput = '';
-    this.filterValue = '';
-    this.prepareChartData();
-  }
+    if (this.groupMode() === 'day') {
+      key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+    } else if (this.groupMode() === 'month') {
+      key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}`;
+    } else if (this.groupMode() === 'week') {
+      const janFirst = new Date(dateObj.getFullYear(), 0, 1);
+      const days = Math.floor((dateObj.getTime() - janFirst.getTime()) / (24 * 60 * 60 * 1000));
+      const week = Math.ceil((days + janFirst.getDay() + 1) / 7);
+      key = `${dateObj.getFullYear()}-W${week.toString().padStart(2, '0')}`;
+    }
+
+    if (this.filterValue() && !key.startsWith(this.filterValue())) return;
+
+    grouped[key] = (grouped[key] || 0) + 1;
+  });
+
+  const sortedKeys = Object.keys(grouped).sort();
+  return sortedKeys.map(k => grouped[k]);
+});
+
+applyFilter(): void {
+  this.filterValue.set(this.filterInput().trim());
+}
+
+resetFilter(): void {
+  this.filterInput.set('');
+  this.filterValue.set('');
+}
 
   getColor(mood: Category): string {
     return mood?.color || '#f0f0f0';

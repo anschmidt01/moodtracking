@@ -1,7 +1,8 @@
-import { Component, Output, EventEmitter, signal, OnInit } from '@angular/core';
+import { Component, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { MoodService } from 'src/app/services/mood.service';
 import { CategoryService, Category } from 'src/app/services/category.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-add-entry',
@@ -9,31 +10,31 @@ import { CategoryService, Category } from 'src/app/services/category.service';
   templateUrl: './add-entry.component.html',
   styleUrls: ['./add-entry.component.scss']
 })
-export class AddEntryComponent implements OnInit {
-  moodOptions: Category[] = [];
-  activityOptions: Category[] = [];
+export class AddEntryComponent {
+  categories = signal<Category[]>([]);
+
+  moodOptions = computed(() =>
+    this.categories().filter(c => c.type === 'mood')
+  );
+
+  activityOptions = computed(() =>
+    this.categories().filter(c => c.type === 'activity')
+  );
 
   selectedEmotion = signal<number | null>(null);
   selectedActivities = signal<number[]>([]);
   note = signal<string>('');
 
-  @Output() entrySaved = new EventEmitter<any>();
-
   constructor(
     private moodService: MoodService,
     private categoryService: CategoryService,
     private router: Router
-  ) {}
-
-  ngOnInit() {
-    this.categoryService.getCategories().subscribe({
-      next: (cats) => {
-        this.moodOptions = cats.filter(c => c.type === 'mood');
-        this.activityOptions = cats.filter(c => c.type === 'activity');
-      },
-      error: (err) => {
-        console.error('Fehler beim Laden der Kategorien:', err);
-      }
+  ) {
+    // Observable in Signal umwandeln
+    const categories$ = this.categoryService.getCategories();
+    categories$.subscribe({
+      next: (data) => this.categories.set(data),
+      error: (err) => console.error('Fehler beim Laden:', err)
     });
   }
 
@@ -67,13 +68,11 @@ export class AddEntryComponent implements OnInit {
       mood_id: this.selectedEmotion() as number,
       activity_ids: this.selectedActivities(),
       notes: this.note().trim(),
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString(),
     };
-    console.log('Eintrag wird gesendet:', entry);
 
     this.moodService.saveMood(entry).subscribe({
-      next: (response) => {
-        console.log('In DB gespeichert:', response);
+      next: () => {
         alert('Eintrag erfolgreich gespeichert!');
         this.selectedEmotion.set(null);
         this.selectedActivities.set([]);

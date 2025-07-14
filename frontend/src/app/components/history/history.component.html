@@ -2,23 +2,39 @@
     <h2 class="title">📈 Verlauf</h2>
   
     <div class="filter-bar">
-      <!-- Filter Controls -->
-    </div>
-  
-    <div class="chart-box">
-      <canvas
-        baseChart
-        [datasets]="[{ data: chartData, label: 'Einträge' }]"
-        [labels]="chartLabels"
-        [options]="{ responsive: true }"
-        [legend]="true"
-        chartType="line"
-      ></canvas>
-    </div>
+      <label>
+        Gruppierung:
+        <select [(ngModel)]="groupMode">
+          <option value="day">Tag</option>
+          <option value="week">Woche</option>
+          <option value="month">Monat</option>
+        </select>
+      </label>
+      <input
+      type="text"
+      placeholder="Filter (Jahr oder Monat)..."
+      [ngModel]="filterInput()"
+      (ngModelChange)="filterInput.set($event)"
+    />
+
+    <button (click)="applyFilter()">Filter anwenden</button>
+    <button (click)="resetFilter()">Zurücksetzen</button>
+  </div>
+
+   <div class="chart-box">
+    <canvas
+      baseChart
+      [datasets]="[{ data: chartData(), label: 'Einträge' }]"
+      [labels]="chartLabels()"
+      [options]="{ responsive: true }"
+      [legend]="true"
+      chartType="line"
+    ></canvas>
+  </div>
   
     <div class="entries-list">
       <div
-        *ngFor="let entry of entries"
+        *ngFor="let entry of entries()"
         class="entry-card"
         [ngStyle]="{ 'background-color': getColor(entry.mood) }"
       >

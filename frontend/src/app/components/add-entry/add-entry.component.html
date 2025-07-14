@@ -2,7 +2,7 @@
   <h2 class="title">Wie geht es dir heute?</h2>
   <div class="emotions">
     <button
-      *ngFor="let emotion of moodOptions"
+      *ngFor="let emotion of moodOptions()"
       [class.selected]="selectedEmotion() === emotion.id"
       (click)="selectEmotion(emotion.id)"
       [ngStyle]="{ 'background-color': emotion.color || '#f0f0f0' }"
@@ -16,7 +16,7 @@
   <h3 class="subtitle">Heutige Aktivitäten</h3>
   <div class="activities">
     <button
-      *ngFor="let activity of activityOptions"
+      *ngFor="let activity of activityOptions()"
       [class.active]="selectedActivities().includes(activity.id)"
       (click)="toggleActivity(activity.id)"
       class="activity-button"

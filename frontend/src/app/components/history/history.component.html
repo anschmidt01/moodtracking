@@ -21,16 +21,19 @@
     <button (click)="resetFilter()">Zurücksetzen</button>
   </div>
 
-   <div class="chart-box">
+  <div class="chart-box">
     <canvas
-      baseChart
-      [datasets]="[{ data: chartData(), label: 'Einträge' }]"
-      [labels]="chartLabels()"
-      [options]="{ responsive: true }"
-      [legend]="true"
-      chartType="line"
-    ></canvas>
+  baseChart
+  [datasets]="chartDatasets"
+  [labels]="chartLabels"
+  [options]="chartOptions"
+  [legend]="true"
+  chartType="line">
+</canvas>
+
   </div>
+  
+  
   
     <div class="entries-list">
       <div

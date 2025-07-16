@@ -15,9 +15,13 @@ export class HistoryComponent implements OnInit {
   filterInput = signal<string>('');
   filterValue = signal<string>('');
 
+  chartLabels: string[] = [];
+  chartDatasets: any[] = [];
+
   constructor(
-    private moodService: MoodService, 
-    private categoryService: CategoryService) {}
+    private moodService: MoodService,
+    private categoryService: CategoryService
+  ) {}
 
   ngOnInit() {
     this.categoryService.getCategories().subscribe({
@@ -28,79 +32,101 @@ export class HistoryComponent implements OnInit {
       error: (err) => console.error('Fehler beim Laden der Kategorien:', err)
     });
   }
+
   loadEntries(): void {
     this.moodService.getMoods().subscribe({
       next: (data) => {
-        const sorted = data.sort((a, b) => b.id - a.id);
-        this.entries.set(sorted);
+        // Sortiert nach Datum aufsteigend (alt -> neu)
+        const sortedByDate = data.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
+        
+        // Für Liste unten: neueste zuerst
+        this.entries.set([...sortedByDate].reverse());
+  
+        // Timeline vorbereiten (Diagramm)
+        this.prepareTimeline(sortedByDate);
       },
       error: (err) => console.error('Fehler beim Laden der Einträge:', err)
     });
   }
   
- // Computed Labels
- chartLabels = computed(() => {
-  const grouped: { [key: string]: number } = {};
 
-  this.entries().forEach(entry => {
-    const dateObj = new Date(entry.date);
-    let key = '';
+  prepareTimeline(sortedEntries: MoodEntry[]) {
+    const moods = Array.from(this.categoryMap.values()).filter(c => c.type === 'mood');
+    const moodLabelMap = new Map<number, string>(
+      moods.map(m => [m.id, `${m.emoji} ${m.text}`])
+    );
 
-    if (this.groupMode() === 'day') {
-      key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
-    } else if (this.groupMode() === 'month') {
-      key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}`;
-    } else if (this.groupMode() === 'week') {
-      const janFirst = new Date(dateObj.getFullYear(), 0, 1);
-      const days = Math.floor((dateObj.getTime() - janFirst.getTime()) / (24 * 60 * 60 * 1000));
-      const week = Math.ceil((days + janFirst.getDay() + 1) / 7);
-      key = `${dateObj.getFullYear()}-W${week.toString().padStart(2, '0')}`;
+    // Alle eindeutigen Datumslabels
+    const labelsSet = new Set(
+      sortedEntries.map(e =>
+        new Date(e.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' })
+      )
+    );
+    this.chartLabels = Array.from(labelsSet);
+
+    // Alle Mood IDs
+    const moodIds = moods.map(m => m.id);
+    const minId = Math.min(...moodIds);
+    const maxId = Math.max(...moodIds);
+
+    // Datasets für jede Stimmung
+    this.chartDatasets = [{
+      label: 'Stimmungsverlauf',
+      type: 'line',
+      data: sortedEntries.map(e => e.mood.id),
+      fill: false,
+      tension: 0.3,
+      borderColor: '#3f51b5',
+      pointBackgroundColor: '#3f51b5'
+    }];
+    this.chartLabels = sortedEntries.map(e =>
+      new Date(e.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' })
+    );
+
+    // Dynamische Min/Max Y-Achse
+    this.chartOptions.scales.y.min = minId;
+    this.chartOptions.scales.y.max = maxId;
+
+    // Dynamisches Label Callback
+    this.chartOptions.scales.y.ticks.callback = (value: number) =>
+      moodLabelMap.get(value) ?? '';
+  }
+
+  chartOptions = {
+    responsive: true,
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: 'Stimmung'
+        },
+        min: 1,
+        max: 8,
+        ticks: {
+          stepSize: 1,
+          callback: (value: number) => String(value)
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true
+      }
     }
+  };
 
-    if (this.filterValue() && !key.startsWith(this.filterValue())) return;
+  applyFilter(): void {
+    this.filterValue.set(this.filterInput().trim());
+    this.prepareTimeline(this.entries());
+  }
 
-    grouped[key] = (grouped[key] || 0) + 1;
-  });
-
-  return Object.keys(grouped).sort();
-});
-
-// Computed Data
-chartData = computed(() => {
-  const grouped: { [key: string]: number } = {};
-
-  this.entries().forEach(entry => {
-    const dateObj = new Date(entry.date);
-    let key = '';
-
-    if (this.groupMode() === 'day') {
-      key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
-    } else if (this.groupMode() === 'month') {
-      key = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}`;
-    } else if (this.groupMode() === 'week') {
-      const janFirst = new Date(dateObj.getFullYear(), 0, 1);
-      const days = Math.floor((dateObj.getTime() - janFirst.getTime()) / (24 * 60 * 60 * 1000));
-      const week = Math.ceil((days + janFirst.getDay() + 1) / 7);
-      key = `${dateObj.getFullYear()}-W${week.toString().padStart(2, '0')}`;
-    }
-
-    if (this.filterValue() && !key.startsWith(this.filterValue())) return;
-
-    grouped[key] = (grouped[key] || 0) + 1;
-  });
-
-  const sortedKeys = Object.keys(grouped).sort();
-  return sortedKeys.map(k => grouped[k]);
-});
-
-applyFilter(): void {
-  this.filterValue.set(this.filterInput().trim());
-}
-
-resetFilter(): void {
-  this.filterInput.set('');
-  this.filterValue.set('');
-}
+  resetFilter(): void {
+    this.filterInput.set('');
+    this.filterValue.set('');
+    this.prepareTimeline(this.entries());
+  }
 
   getColor(mood: Category): string {
     return mood?.color || '#f0f0f0';

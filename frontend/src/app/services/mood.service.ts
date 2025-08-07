@@ -23,7 +23,7 @@ export interface CreateMoodDto {
   providedIn: 'root'
 })
 export class MoodService {
-  private apiUrl = 'http://localhost:3000/moods'; // dein Backend-Endpunkt
+  private apiUrl = 'http://localhost:3000/moods';
 
   constructor(private http: HttpClient) {}
 
@@ -32,9 +32,19 @@ export class MoodService {
     return this.http.post<any>(this.apiUrl, entry);
   }
 
-  // Abrufen
+  // Alle Mood-Einträge abrufen
   getMoods(): Observable<MoodEntry[]> {
     return this.http.get<MoodEntry[]>(this.apiUrl);
+  }
+
+  // Statistik abrufen
+  getStatistics(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/statistics`);
+  }
+
+  // Einträge (identisch zu getMoods)
+  getEntries(): Observable<MoodEntry[]> {
+    return this.getMoods();
   }
 
   // Löschen

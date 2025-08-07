@@ -1,14 +1,7 @@
-// src/app/components/statistics/statistics.component.ts
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ChartData, ChartOptions } from 'chart.js';
-import { CategoryService, Category } from 'src/app/services/category.service';
-
-interface MoodStatistic {
-  mood_id: number;
-  count: number;
-  percentage: number;
-}
+import { Component, OnInit, signal, computed, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { CategoryService } from '../../services/category.service';
+import { MoodService } from '../../services/mood.service';
 
 @Component({
   selector: 'app-statistics',
@@ -17,130 +10,101 @@ interface MoodStatistic {
   styleUrls: ['./statistics.component.scss']
 })
 export class StatisticsComponent implements OnInit {
-  moodStats: MoodStatistic[] = [];
-  totalCount = 0;
-  isLoading = true;
-  error: string | null = null;
+  isLoading = signal(true);
+  error = signal<string | null>(null);
+  selectedMoodId = signal<number | null>(null);
 
-  entries: any[] = [];
-  filteredEntries: any[] = [];
-  selectedMoodId: number | null = null;
+  categories = signal<any[]>([]);
+  moods = signal<any[]>([]);
+  entries = signal<any[]>([]); // nur einmal laden
 
-  categories: Category[] = [];
+  // Statistik direkt aus entries berechnen
+  moodStats = computed(() => {
+    const all = this.entries();
+    const total = all.length;
+    const grouped: Record<number, number> = {};
 
-  chartData: ChartData<'doughnut'> = {
-    labels: [],
-    datasets: [{
-      data: [],
-      backgroundColor: []
-    }]
-  };
+    all.forEach(entry => {
+      const id = entry.mood.id; // aus deinem MoodEntry-Interface
+      grouped[id] = (grouped[id] || 0) + 1;
+    });
 
-  chartOptions: ChartOptions<'doughnut'> = {
+    return Object.entries(grouped).map(([mood_id, count]) => ({
+      mood_id: Number(mood_id),
+      count,
+      percentage: total ? Math.round((count / total) * 100) : 0
+    }));
+  });
+
+  totalCount = computed(() =>
+    this.moodStats().reduce((sum, m) => sum + m.count, 0)
+  );
+
+  chartData = computed(() => ({
+    labels: this.moodStats().map(s => this.getMoodText(s.mood_id)),
+    datasets: [
+      {
+        data: this.moodStats().map(s => s.count),
+        backgroundColor: this.moodStats().map(s => this.getColor(s.mood_id))
+      }
+    ]
+  }));
+
+  filteredEntries = computed(() =>
+    this.selectedMoodId()
+      ? this.entries().filter(e => e.mood.id === this.selectedMoodId())
+      : []
+  );
+
+  chartOptions = {
     responsive: true,
-    plugins: {
-      legend: { position: 'bottom' }
-    }
+    plugins: { legend: { position: 'bottom' as const } }
   };
 
-  // Kategorien Map mood_id -> Category
-  moodMap = new Map<number, Category>();
+  constructor(
+    private categoryService: CategoryService,
+    private moodService: MoodService
+  ) {}
 
-  constructor(private http: HttpClient, private categoryService: CategoryService) {}
-
-  ngOnInit(): void {
-    this.isLoading = true;
-  
-    // Kategorien laden
+  ngOnInit() {
     this.categoryService.getCategories().subscribe({
-      next: (cats) => {
-        this.categories = cats.filter(c => c.type === 'mood');
-  
-        // Dann die Statistikdaten laden
-        this.fetchStatistics();
-        this.loadEntries();
-      },
-      error: (err) => {
-        console.error('Fehler beim Laden der Kategorien:', err);
-        this.error = 'Fehler beim Laden der Kategorien: ' + err.message;
-        this.isLoading = false;
-      }
+      next: (data) => this.categories.set(data),
+      error: (err) => this.error.set(err?.message || 'Fehler beim Laden der Kategorien')
     });
-  }
-  
 
-  loadEntries(): void {
-    this.http.get<any[]>('http://localhost:3000/moods').subscribe({
+    this.moodService.getMoods().subscribe({
       next: (data) => {
-        this.entries = data;
-        this.filteredEntries = data;
+        this.moods.set(data);
+        this.entries.set(data); // Einträge = alle Moods
+        this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Error loading entries:', err);
+        this.error.set(err?.message || 'Fehler beim Laden der Stimmungseinträge');
+        this.isLoading.set(false);
       }
     });
   }
 
-  fetchStatistics(): void {
-    this.http.get<{ mood_id: number; count: number }[]>('http://localhost:3000/statistics').subscribe({
-      next: (data) => {
-        this.totalCount = data.reduce((sum, item) => sum + item.count, 0);
-        this.moodStats = data.map(item => ({
-          ...item,
-          percentage: this.totalCount > 0 ? +(item.count / this.totalCount * 100).toFixed(1) : 0
-        }));
-        this.moodStats.sort((a, b) => b.count - a.count);
-
-        this.chartData = {
-          labels: this.moodStats.map(s => this.getMoodText(s.mood_id)),
-          datasets: [{
-            data: this.moodStats.map(s => s.count),
-            backgroundColor: this.moodStats.map(s => this.getColor(s.mood_id))
-          }]
-        };
-
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading statistics:', err);
-        this.error = 'Fehler beim Laden der Statistik: ' + err.message;
-        this.isLoading = false;
-      }
-    });
-  }
-
-  onChartClick(event: any): void {
-    const activePoints = event?.active;
-    if (activePoints?.length > 0) {
-      const index = activePoints[0].index;
-      const moodId = this.moodStats[index].mood_id;
-      if (moodId) {
-        if (this.selectedMoodId === moodId) {
-          this.selectedMoodId = null;
-          this.filteredEntries = [];
-        } else {
-          this.selectedMoodId = moodId;
-          this.filteredEntries = this.entries.filter(e => e.mood_id === moodId);
-        }
-      }
-    }
-  }
-
-  getMoodText(moodId: number): string {
-    const cat = this.categories.find(c => c.id === moodId);
-    return cat ? cat.text : 'Unbekannt';
-  }
-  
-  getEmoji(moodId: number): string {
-    const cat = this.categories.find(c => c.id === moodId);
-    return cat?.emoji ?? '❓';
-  }
   getColor(moodId: number): string {
-    const category = this.categories?.find(c => c.id === moodId);
-    return category?.color ?? '#cccccc';
+    const mood = this.categories().find(c => c.id === moodId && c.type === 'mood');
+    return mood?.color || '#ccc';
   }
-  getLabel(moodId: number): string {
-    const category = this.categories?.find(c => c.id === moodId);
-    return category?.text ?? 'Unbekannt';
+
+  getEmoji(moodId: number): string {
+    const mood = this.categories().find(c => c.id === moodId && c.type === 'mood');
+    return mood?.emoji || '';
+  }
+  
+  getMoodText(moodId: number): string {
+    const mood = this.categories().find(c => c.id === moodId && c.type === 'mood');
+    return mood?.text || '';
+  }
+
+  onChartClick(event: any) {
+    const index = event?.active?.[0]?.index;
+    if (index !== undefined) {
+      const moodId = this.moodStats()[index]?.mood_id;
+      this.selectedMoodId.set(moodId ?? null);
+    }
   }
 }

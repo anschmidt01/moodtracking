@@ -117,11 +117,12 @@ export class HistoryComponent implements OnInit {
     }
   };
 
-  applyFilter(): void {
-    this.filterValue.set(this.filterInput().trim());
-    this.prepareTimeline(this.entries());
-  }
-
+  filteredEntries = computed(() => {
+    const query = this.filterValue().toLowerCase().trim();
+    return this.entries().filter(entry =>
+      entry.date.toLowerCase().includes(query)
+    );
+  });
   resetFilter(): void {
     this.filterInput.set('');
     this.filterValue.set('');

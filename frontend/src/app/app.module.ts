@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +23,7 @@ import { ExportComponent } from './components/settings/export/export.component';
 import { ProfileComponent } from './components/settings/profile/profile.component';
 import { EditCategoryComponent} from './components/settings/edit-category/edit-category.component';
 import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,12 @@ import { InfoDialogComponent } from './components/info-dialog/info-dialog.compon
     BrowserAnimationsModule,
     MatDialogModule,
     MatButtonModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],  // <-- HIER HINZUFÜGEN
 

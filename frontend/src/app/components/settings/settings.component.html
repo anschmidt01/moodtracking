@@ -1,21 +1,35 @@
 <div class="settings-container">
     <h2>⚙️ Einstellungen</h2>
+
   
     <div class="welcome__cards">
-        <div class="card card--profile" (click)="goTo('profile')">
+        <div class="card card--profile" (click)="goTo('settings/profile')">
             <div class="card__icon">👤</div>
             <div class="card__label">Profil</div>
           </div>
-      <div class="card card--categories" (click)="goTo('categories')">
+      <div class="card card--categories" (click)="goTo('settings/categories')">
         <div class="card__icon">📝</div>
         <div class="card__label">Kategorien bearbeiten</div>
       </div>
   
-      <div class="card card--export" (click)="goTo('export')">
+      <div class="card card--export" (click)="goTo('settings/export')">
         <div class="card__icon">📤</div>
         <div class="card__label">Daten exportieren</div>
       </div>
 
+      <div *ngIf="!isSafari() && !pwa.isStandalone() && pwa.canInstall()" 
+         class="card card--install" (click)="pwa.install()">
+      <div class="card__icon">📲</div>
+      <div class="card__label">App installieren</div>
+    </div>
+
+    <div *ngIf="isSafari() && !pwa.isStandalone()" class="card card--install-hint">
+      <div class="card__icon">ℹ️</div>
+      <div class="card__label">
+        iOS/macOS Safari: <br>
+        <small>Teilen → „Zum Home‑Bildschirm“</small>
+      </div>
+    </div>
     </div>
   </div>
   

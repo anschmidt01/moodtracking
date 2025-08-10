@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1754850036011,
+  "timestamp": 1754851926589,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-BTA46MWF.js",
+        "/main-C2CIM5LN.js",
         "/manifest.webmanifest",
         "/polyfills-B6TNHZQ6.js",
         "/styles-EDAKTOV6.css"
@@ -57,8 +57,8 @@
     "/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
     "/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
     "/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
-    "/index.html": "5121b0c9743bfc4334d60c14432b9827420f3c11",
-    "/main-BTA46MWF.js": "0b29bdb35a1b5494069426299b2d761505c6d06d",
+    "/index.html": "8a4abc6f529e3f7864e3d21b98fa83d00258269a",
+    "/main-C2CIM5LN.js": "39a64dfe2170106ad90e240f052d25250c19eaeb",
     "/manifest.webmanifest": "60a918b837ef2f57f1ddc6a83654e223310b6b1a",
     "/polyfills-B6TNHZQ6.js": "bf76ac291d7f51c1139b7edcf86b359a30c08c64",
     "/styles-EDAKTOV6.css": "d9c21f9a61443fee890da7a5d6056f74511c6948"

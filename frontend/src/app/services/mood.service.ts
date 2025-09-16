@@ -21,12 +21,16 @@ export interface CreateMoodDto {
 
 @Injectable({
   providedIn: 'root'
+
 })
 export class MoodService {
   private apiUrl = `${environment.apiBaseUrl}/moods`;
 
-  constructor(private http: HttpClient) {}
-
+  constructor(private http: HttpClient) {
+    console.log('API Base URL:', environment.apiBaseUrl);
+    console.log('Full Moods URL:', this.apiUrl);
+  }
+  
   // Speichern
   saveMood(entry: CreateMoodDto): Observable<any> {
     return this.http.post<any>(this.apiUrl, entry);

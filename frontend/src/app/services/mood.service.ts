@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Category } from './category.service';
-// Für Einträge, die du ABRUFS (GET) bekommst
+
 export interface MoodEntry {
   id: number;
   date: string;
-  mood: Category;            // KEIN string mehr!
-  activities: Category[];    // KEIN string[]
+  mood: Category;            
+  activities: Category[];    
   notes: string;
 }
 
-// Für Einträge, die du SPEICHERST (POST/PUT)
 export interface CreateMoodDto {
   mood_id: number;
   activity_ids: number[];
@@ -23,7 +23,7 @@ export interface CreateMoodDto {
   providedIn: 'root'
 })
 export class MoodService {
-  private apiUrl = 'http://localhost:3000/moods';
+  private apiUrl = `${environment.apiBaseUrl}/moods`;
 
   constructor(private http: HttpClient) {}
 

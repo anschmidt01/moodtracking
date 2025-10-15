@@ -1,22 +1,10 @@
 {
-  //Verweis auf das Schema, das die gültige Struktur der Konfigurations-
-  //datei definiert. Dadurch können Code-Editoren Autovervollständigungen
-  // und Validierung anbieten. 
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
-  //Definiert die Hauptdatei, die geladen werden soll, wenn der Service
-  //Worker aktiv ist. In SPA wird index.html für alle Routen zurückgegeben. 
-  "index": "/index.html",
+   "index": "/index.html",
   "assetGroups": [
     {
-      //Name der Caching-Gruppe hier: app für Kernressourcen der Anwenudng
       "name": "app",
-      //Alle Dateien in dieser Gruppe werden beim ersten Starten der App
-      //vollständig heruntergeladen und im Cache gespeichert. 
-      //App kann sofort offline gestartet werden. 
-      "installMode": "prefetch",
-      //Dateien werden alle beim Installieren des Service Workers vorgeladen
-      //App-Symbole, Hauptseiten der App, PWA-Eigenschaften (Name, Icons, Farben)
-      //Alle CSS- und JS-Dateien im Root-Verzeichnis -> Kernlogik & Styling der App 
+        "installMode": "prefetch",
       "resources": {
         "files": [
           "/favicon.ico",
@@ -29,17 +17,10 @@
       }
     },
     {
-      //Zweite Caching-Gruppe für Bilder, Fonts und andere statische Dateien
       "name": "assets",
-      //Dateien werden erst geladen, wenn sie das erste Mal benötigt werden
-      //Schnellere Erstinstallation, das nicht alles vorgeladen wird
-      "installMode": "lazy",
-      //hier: wenn ein Update gibt, werden neue Versionen dieser Dateien bereits
-      //im Hintergrund heruntergeladen, sobald Service Worker aktiv ist. 
-      "updateMode": "prefetch",
-      //Regel erfasst alle Bild- und Fontformate aus dem gesamten Projektverzeichnis. 
-      //Somit funktionieren Icons, Grafiken, Emojis und Schriftarten auch offline 
-      "resources": {
+     "installMode": "lazy",
+       "updateMode": "prefetch",
+       "resources": {
         "files": [
           "/**/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
         ]

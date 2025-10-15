@@ -7,8 +7,12 @@ import { categoriesRouter } from './routes.categories.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const origins = (process.env.CORS_ORIGINS || '').split(',').map(o => o.trim());
+
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: origins,
+}));
 
 app.get('/health', (_, res) => res.json({ ok: true }));
 

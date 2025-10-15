@@ -1,8 +1,36 @@
-<nav class="navbar">
-    <a routerLink="/">🏠 Startseite</a>
-    <a routerLink="/add-entry" routerLinkActive="active">➕ Neuer Eintrag</a>
-    <a routerLink="/history" routerLinkActive="active">📈 Verlauf</a>
-    <a routerLink="/statistics" routerLinkActive="active">📊 Statistik</a>
-    <a routerLink="/settings" routerLinkActive="active">⚙️ Einstellungen</a>
-  </nav>
+<!-- Top Navbar (nur Browser) -->
+<nav class="top-nav desktop-only">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">🏠 Startseite</a>
+  <a routerLink="/add-entry" routerLinkActive="active">➕ Neuer Eintrag</a>
+  <a routerLink="/history" routerLinkActive="active">📈 Verlauf</a>
+  <a routerLink="/statistics" routerLinkActive="active">📊 Statistik</a>
+  <a routerLink="/settings" routerLinkActive="active">⚙️ Einstellungen</a>
+</nav>
+
+<main class="content">
   <router-outlet></router-outlet>
+</main>
+
+<!-- Bottom Navbar (nur Mobile) -->
+<nav class="bottom-nav mobile-only">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+    <span class="icon">🏠</span>
+    <span class="label">Start</span>
+  </a>
+  <a routerLink="/add-entry" routerLinkActive="active">
+    <span class="icon">➕</span>
+    <span class="label">Neu</span>
+  </a>
+  <a routerLink="/history" routerLinkActive="active">
+    <span class="icon">📈</span>
+    <span class="label">Verlauf</span>
+  </a>
+  <a routerLink="/statistics" routerLinkActive="active">
+    <span class="icon">📊</span>
+    <span class="label">Statistik</span>
+  </a>
+  <a routerLink="/settings" routerLinkActive="active">
+    <span class="icon">⚙️</span>
+    <span class="label">Einstellungen</span>
+  </a>
+</nav>

@@ -30,7 +30,7 @@ export class MoodService {
     console.log('API Base URL:', environment.apiBaseUrl);
     console.log('Full Moods URL:', this.apiUrl);
   }
-  
+
   // Speichern
   saveMood(entry: CreateMoodDto): Observable<any> {
     return this.http.post<any>(this.apiUrl, entry);

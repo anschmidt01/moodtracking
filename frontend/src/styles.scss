@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 body {
     margin: 0;
-    font-family: 'Inter', sans-serif;
+  font-family: 'Inter', Roboto, "Helvetica Neue", sans-serif;
     background: #f7f7f7;
     color: #333;
 
@@ -11,37 +11,91 @@ body {
         }
     }
   }
-  
-  .navbar {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 1rem;
-    background: linear-gradient(to right, #d0eaff, #e0d7f7);
-    color: #333;
-    border-radius: 0 0 12px 12px;
-  
-    a {
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      transition: background 0.3s, border-bottom 0.3s;
-  
-      &:hover {
-        background: rgba(255, 255, 255, 0.5);
-      }
-  
-      &.active {
-        border-bottom: 2px solid #666;
-        font-weight: 700;
-      }
-    }
-  }
-  
-  
- 
+/* Standardmäßig: nur Bottom-Nav sichtbar */
+.desktop-only { display: none !important; }
+.mobile-only { display: flex !important; }
+
+/* Ab 768px (Tablet, Desktop): nur Top-Nav sichtbar */
+@media (min-width: 768px) {
+  .desktop-only { display: flex !important; }
+  .mobile-only { display: none !important; }
+}
+
+/* Top Navbar */
+.top-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(to right, #d0eaff, #e0d7f7);
+  border-radius: 0 0 12px 12px;
+  padding: 12px 20px;
+  z-index: 1000;
+}
+
+.top-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding: 0 10px;
+}
+
+.top-nav a.active {
+  font-weight: bold;
+  border-bottom: 2px solid #333;
+}
+
+/* Bottom Navbar */
+.content {
+  padding-bottom: calc(70px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  background: linear-gradient(to right, #d0eaff, #e0d7f7);
+  border-radius: 12px 12px 0 0;
+
+  /* Höhe vergrößern */
+  min-height: 70px; /* vorher ca. 40-50px */
+  padding-top: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+
+  z-index: 1000;
+}
+
+.bottom-nav a {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  font-size: 14px; /* etwas größerer Text */
+  padding: 6px 0;  /* mehr Klickfläche */
+}
+
+.bottom-nav .icon {
+  font-size: 22px; /* größere Icons */
+  line-height: 1.2;
+}
+
+.bottom-nav .label {
+  margin-top: 4px;
+}
+
   
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+

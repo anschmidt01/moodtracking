@@ -1,4 +1,7 @@
+// Importiert das Angular-Routing-System 
 import { NgModule } from '@angular/core';
+// 'Routes' beschreibt, welche URL-Pfade zu welchen Komponeten führen
+// 'RouterModule' macht diesen Routen im gesamten Projekt verfügbar
 import { RouterModule, Routes } from '@angular/router';
 
 import { HistoryComponent } from './components/history/history.component';

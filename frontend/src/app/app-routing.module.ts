@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 // 'RouterModule' macht diesen Routen im gesamten Projekt verfügbar
 import { RouterModule, Routes } from '@angular/router';
 
+//Die Komponenten der App - jede wird über eine Route erreichbar gemacht
 import { HistoryComponent } from './components/history/history.component';
 import { AddEntryComponent } from './components/add-entry/add-entry.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
@@ -18,11 +19,16 @@ import { ProfileComponent } from './components/settings/profile/profile.componen
 import { EditCategoryComponent } from './components/settings/edit-category/edit-category.component';
 import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 
+// Standardroute: Wenn jemand auf "/" geht, wird die Startseite
+// (WelcomeComponent) angezeigt
 const routes: Routes = [
   { path: '', component: WelcomeComponent}, 
   {
     path: '',
     component: MainLayoutComponent, 
+    // Unterrouten innerhalb des Hauptlayouts
+    // Das MainLayoutComponent enthält die Navigationsbar
+    // darin werden einzelnen Seiten gerendert
     children: [
   { path: 'history', component: HistoryComponent },
   { path: 'add-entry', component: AddEntryComponent },
@@ -41,11 +47,17 @@ const routes: Routes = [
   { path: 'info-dialog', component: InfoDialogComponent}
 ]
  },
+ // Wildcard-Route: Fängt alle ungültigen URLs ab und leitet zur Startseite weiter
+ // Dadurch gibt es keine "Seite nicht gefunden"-Fehler
   { path: '**', redirectTo: ''}
 ];
 
 @NgModule({
+  //Initialisiert das Router-Modul mit diesen Routen
+  // forRoot() wird nur einmal im Root-Modul verwendet
   imports: [RouterModule.forRoot(routes)],
+  // Exportiert das Router-Modul damit es in AppModule importiert werden kann
   exports: [RouterModule]
 })
+// Exportiert das Modul, sodass es in AppModule eingebunden werden kann 
 export class AppRoutingModule {}

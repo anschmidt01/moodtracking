@@ -1,23 +1,39 @@
+<!--Deklariert das Dokument als HTML5-->
 <!DOCTYPE html>
+<!--gibt an, dass Seiteninhalt auf Deutsch ist-->
 <html lang="de">
 <head>
+  <!--Zeichencodierung erlaubt Umlaute, Emojis-->
   <meta charset="UTF-8"/>
+  <!-- Sorgt dafprm dass App auf movilen Geräten richtig skaliert wird 
+   Responsive-Design-Basis, sehr wichtig für PWA und Mobile Optimierung-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Titel der Anwendung wird bspw. im Browser-Tab angezeigt -->
   <title>Willkommen</title>
 
+  <!-- Standard-Favicon im BrowserTab-->
   <link rel="icon" type="image/x-icon" href="/icons/appsymbol.ico">
+  <!-- Icons für mobile Geräte, bspw. iPhone Homescreen oder Android PWA-->
   <link rel="apple-touch-icon" sizes="192x192" href="/icons/appsymbol-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="/icons/appsymbol-512.png">
   
+  <!-- Importiert der Schriftart Inter-->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet">
+  <!-- Setzt den Basis-Pfad für relative Links in der App (notwendig für AngularRouting)
+   alle pfade werden relativ zur root-url interpretiert-->
   <base href="/">
+  <!-- weitere google fonts + materila icons, nötig für Angular Material Buttons & Dialoge-->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="manifest" href="manifest.webmanifest">
+  <!-- Manifest-Datei beschreibt App als installierbare PWA:
+   Name, Icons, Start-Url, Theme-Farben,etc.-->
   <link rel="manifest" href="manifest.webmanifest">
 </head>
 <body>
+  <!-- Das Root-Element der App
+   Angular ersetzt dieses Tag beim Start durch AppComponent (aus app.component.ts)-->
   <app-root></app-root>
+  <!-- Fallback-Nachricht, falls JavaScript deaktiviert ist-->
   <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>
